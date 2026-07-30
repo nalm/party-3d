@@ -126,6 +126,10 @@ export function createPicker({ camera, domElement, items, onSelect, onDeselect }
   return {
     clearSelection: () => setSelected(null),
     getSelected: () => selected?.rec ?? null,
+    // 2D 뷰에서 고른 점을 3D 상태와 맞추기 위한 진입점. 선택 경로를 하나로 유지한다.
+    selectById(id) {
+      setSelected(id ? (items.find((i) => i.rec.id === id) ?? null) : null);
+    },
     // 절단점이 바뀌면 선택 강조 색도 따라가야 한다
     refreshAll: () => items.forEach(refresh),
     // 필터 적용 후 호출. 걸러진 점이 선택·호버 상태로 남아 있으면 해제한다.

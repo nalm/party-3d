@@ -179,6 +179,32 @@ export const TRAJECTORY = {
   endGap: POINT.radius * 1.15,
 };
 
+// 2D 대체 뷰 (X-Y 산점도 + 규범을 색·도형으로 이중 인코딩).
+// 정적 등축 투영에 점을 찍으면 독자가 깊이를 판독할 수 없으므로 보도·인쇄에는 2D가 정본이다 — 명세 13.2절.
+export const VIEW2D = {
+  margin: { top: 30, right: 26, bottom: 56, left: 68 },
+  bg: '#0e1116',
+  grid: '#212936',
+  frame: '#3a4250',
+  tickText: '#9aa4b3',
+  pointRadius: 7,
+  hoverRadius: 9,
+  selectRadius: 11,
+  strokeWidth: 1.4,
+  estimatedDash: [3, 2],
+  labelColor: '#e0e6ef',
+  labelFont: '600 11px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif',
+  tickFont: '10px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif',
+  poleFont: '600 11.5px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif',
+  trajColor: '#c8d0dc',
+  trajWidth: 1.8,
+  trajHeadLen: 10,
+  trajHeadHalfWidth: 4.5,
+  dimAlpha: 0.13,
+  // PNG 내보내기 배율. 2배면 인쇄에서 뭉개지지 않는다.
+  exportScale: 2,
+};
+
 // 한국어 UI 문자열. 코드에 하드코딩 금지.
 export const UI = {
   title: '정당 3축 탐색기',
@@ -251,6 +277,25 @@ export const UI = {
   cutUpper: '경계 ↔ 반다원주의',
   cutProposalNote: '절단점 0.30 / 0.50은 명세 5.5절의 제안값이며 문헌 근거가 없다. 값을 바꾸면 점의 색과 도형이 즉시 바뀐다.',
   cutExample: '스페인 복스(0.55)와 이탈리아의 형제들(0.45)은 규범축 차이가 0.10뿐인데 절단점 0.50을 사이에 두고 구간이 갈린다. 슬라이더를 조금만 움직이면 두 정당이 같은 구간으로 합쳐진다.',
+
+  secView: '뷰',
+  view3d: '3D 공간',
+  view2d: '2D 산점도',
+  viewNote3d: '회전·확대로 세 축을 함께 본다. 깊이는 드롭라인으로 읽는다.',
+  viewNote2d: '경제 × 사회·문화 산점도. 규범축은 색과 도형으로 이중 인코딩된다. 보도·인쇄용 정본이다.',
+  view2dLabels: '전체 라벨 표시',
+  view2dLabelsNote: '인쇄용이므로 2D에서는 기본으로 켠다. 겹치는 라벨은 자동으로 생략된다.',
+  exportPng: 'PNG 내보내기',
+  exportNote: '2D 산점도 기준으로 저장한다. 경고와 출처가 이미지 안에 함께 들어간다.',
+  exportFilename: 'party-3d_2D산점도',
+
+  // PNG 이미지 안에 새길 문구
+  pngTitle: '정당 3축 프레임워크 — 경제 × 사회·문화 (규범은 색·도형)',
+  pngWarning: '⚠ 전 좌표 추정치 · 인용 금지 — 실측 교체 전 시드 데이터',
+  pngSourcePrefix: '출처',
+  pngScaleNote: '척도: 경제 0–10 · 사회·문화 0–10 · 민주주의 규범 0–1 (정규화하지 않음)',
+  pngCutNote: (lo, hi) => `규범 구간 절단점 ${lo.toFixed(2)} / ${hi.toFixed(2)} — 명세 제안값이며 문헌 근거 없음`,
+  pngGenerated: (d) => `생성 ${d}`,
 
   secTrajectory: '궤적',
   trajShow: '궤적 표시',

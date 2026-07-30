@@ -57,9 +57,14 @@ party-3d/
     points.js               정당 점 · 드롭라인 · 인코딩
     pick.js                 호버 · 선택 레이캐스팅
     labels.js               CSS2D 라벨
-    panel.js                선택 상세 패널 (출처 표시)
-    filters.js              국가 · 가족 · 연도 필터        (미작성 — 4단계)
-    trajectory.js           연도별 이동 화살표              (미작성 — 5단계)
+    panel.js                선택 상세 패널
+    panel-source.js         출처 블록 렌더링 (패널에서 분리)
+    dom.js                  el · kv DOM 조립 헬퍼
+    filters.js              국가 · 가족 · 연도 필터
+    trajectory.js           연도별 이동 화살표
+    view2d.js               2D 산점도 (Canvas 2D)
+    export-png.js           PNG 합성 (경고 · 범례 · 출처 각인)
+    ui.js                   뷰 전환 · 프리셋 · 절단점 슬라이더 · 궤적 토글 · 리셋
     config.js               색 · 도형 · 구간 절단점 · 한국어 문자열
   index.html
   vite.config.js

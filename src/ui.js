@@ -12,13 +12,63 @@ function el(tag, cls, text) {
   return n;
 }
 
+// 2D/3D 전환 · 전체 라벨 토글 · PNG 내보내기. 사이드바 맨 위에 둔다.
+export function createViewUI(host, { onMode, onLabels, onExport, initialMode = '3d' }) {
+  host.append(el('h2', null, UI.secView));
+
+  const seg = el('div', 'seg');
+  const b3 = el('button', 'preset-mode', UI.view3d);
+  const b2 = el('button', 'preset-mode', UI.view2d);
+  seg.append(b3, b2);
+  host.append(seg);
+
+  const note = el('p', 'hint');
+  const labelsWrap = el('label', 'chk');
+  const labelsInput = el('input');
+  labelsInput.type = 'checkbox';
+  labelsInput.checked = true;
+  labelsInput.addEventListener('change', () => onLabels?.(labelsInput.checked));
+  labelsWrap.append(labelsInput, el('span', null, UI.view2dLabels));
+  const labelsNote = el('p', 'hint', UI.view2dLabelsNote);
+
+  let mode = initialMode;
+
+  function paint() {
+    b3.classList.toggle('on', mode === '3d');
+    b2.classList.toggle('on', mode === '2d');
+    note.textContent = mode === '2d' ? UI.viewNote2d : UI.viewNote3d;
+    // 전체 라벨 토글은 2D에서만 의미가 있다 — 3D는 상시 라벨을 금지한다
+    labelsWrap.style.display = mode === '2d' ? '' : 'none';
+    labelsNote.style.display = mode === '2d' ? '' : 'none';
+  }
+
+  function set(next) {
+    mode = next;
+    paint();
+    onMode?.(mode);
+  }
+
+  b3.addEventListener('click', () => set('3d'));
+  b2.addEventListener('click', () => set('2d'));
+
+  host.append(note, labelsWrap, labelsNote);
+
+  const exportBtn = el('button', 'export-btn', UI.exportPng);
+  exportBtn.addEventListener('click', () => onExport?.());
+  host.append(exportBtn, el('p', 'hint', UI.exportNote));
+
+  paint();
+  return { getMode: () => mode, set };
+}
+
 export function createControlsUI(host, { flyTo, onCutChange, onReset, trajectory, onTrajFilter }) {
   const sliders = {};
   const readouts = {};
   const trajInputs = {};
 
   function cameraSection() {
-    const sec = el('section', 'ctl-sec');
+    // 2D에서는 의미가 없으므로 CSS로 숨긴다
+    const sec = el('section', 'ctl-sec ctl-sec--camera');
     sec.append(el('h2', null, UI.secCamera));
 
     const row = el('div', 'btn-row');

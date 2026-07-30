@@ -5,11 +5,12 @@
     "spec": "docs/framework-spec.md",
     "WARNING": "유럽 18개 레코드의 econ·cultural(36개 좌표)은 CHES 실측값이다(2026-07-30 교체, scripts/apply-ches.mjs). 규범축 20개와 한국 정당 좌표 6개는 여전히 추정치다. 특히 norms는 V-Party 원본이 아니라 2차 문헌 인용·자체 잠정값이므로 규범축 수치를 인용하면 안 된다.",
     "seed_discrepancy": "시드 추정치와 CHES 실측이 1.5 이상 어긋난 레코드 6건: fr-rn-2019(econ 4.5→6.88), es-vox-2019(econ 7.5→9.33), hu-fidesz-2019(econ 6.0→3.73), hu-fidesz-2010(econ 6.3→3.41), pl-pis-2019(econ 4.8→2.95), pl-pis-2010(econ 5.5→3.07). 시드는 Fidesz·PiS를 경제 중도우파로 놓았지만 CHES 전문가들은 좌측에 배치한다. 이 레코드들을 근거로 쓴 과거 서술은 무효다.",
-    "record_count": 27,
-    "unique_party_count": 24,
+    "record_count": 25,
+    "unique_party_count": 22,
     "note_on_us": "us-dem-2024, us-gop-2024는 2026-07-30 지시로 추가한 추정 레코드다(명세 2절 B안). CHES에 미국이 없어 econ은 명세 3.4절 참조 위치, cultural은 자체 추정이다. norms는 잠정 판정이며 V-Party가 미국을 포함하므로 원본 확보 시 실측 교체 대상 1순위다. 명세 13.3절이 예시로 든 '미 공화당 2000→2024' 궤적은 2000년 레코드가 필요하지만 창작 데이터 증가를 피해 보류했다.",
     "note_on_extra_records": "hu-fidesz-2010, pl-pis-2010, fr-fn-2010 세 건은 궤적(trajectory) 렌더링 테스트용 과거 레코드다. party_key로 현재 레코드와 묶인다.",
-    "note_on_korea": "한국 레코드 7건 전부가 추정치다(명세 2절 B안). kr-ppp·kr-dp는 2026-07-30 1차 결정으로, kr-rkp(조국혁신당)·kr-jinbo(진보당)·kr-reform(개혁신당)·kr-bip(기본소득당)·kr-sdp(사회민주당)는 같은 날 원내 1석 이상 정당 추가 지시로 들어갔다. cultural.v는 하위 3지표 균등 가중합, econ.v는 참조 위치 보간, norms.v는 루브릭 Z-1~Z-4 코딩 미착수 상태의 잠정 판정이다. 소수정당 5건의 좌표는 편집국 검수를 거치지 않은 초안 추정이므로 우선 검수 대상이다. 22대 국회 기준 원내 정당 중 새로운미래(1석)는 이후 존속·합당 여부가 불확실해 보류했다 — 확인 후 추가할 것.",
+    "note_on_korea": "한국 레코드 5건 전부가 추정치다(명세 2절 B안). kr-ppp·kr-dp는 2026-07-30 1차 결정으로, kr-rkp(조국혁신당)·kr-jinbo(진보당)·kr-reform(개혁신당)은 같은 날 원내 1석 이상 정당 추가 지시로 들어갔다. cultural.v는 하위 3지표 균등 가중합, econ.v는 참조 위치 보간, norms.v는 루브릭 Z-1~Z-4 코딩 미착수 상태의 잠정 판정이다. 소수정당 3건의 좌표는 편집국 검수를 거치지 않은 초안 추정이므로 우선 검수 대상이다.",
+    "note_on_korea_excluded": "2026-07-30 편집국 결정으로 기본소득당(kr-bip)·사회민주당(kr-sdp)을 제외했다. 원내 1석 이상이지만 의석 규모가 작아 3축 배치의 판독 가치가 낮다는 판단이다. 새로운미래(1석)는 존속·합당 여부가 불확실해 애초에 보류했다. 되살릴 경우 git 이력(커밋 854e366)에 좌표 추정치가 남아 있다. 원내 정당 전수를 다시 담기로 결정하면 세 정당을 함께 검토할 것.",
     "scales": {
       "econ": [
         0,
@@ -1177,98 +1178,6 @@
         "institutionalization": "low",
         "personalization": "high",
         "type": "personalist"
-      },
-      "intl_affiliation": null
-    },
-    {
-      "id": "kr-bip-2025",
-      "party_key": "kr-bip",
-      "country": "KR",
-      "name_ko": "기본소득당",
-      "name_local": "기본소득당 (Basic Income Party)",
-      "label_short": "기본소득",
-      "family": "radical_left",
-      "year": 2025,
-      "econ": {
-        "v": 1,
-        "scale": [0, 10],
-        "src": "OhmyNews.estimate-2026-07",
-        "estimated": true,
-        "note": "자체 추정. 보편 기본소득이 당의 정체성이므로 재분배 극단에 두었다. 강령·표결 코딩 미착수"
-      },
-      "cultural": {
-        "v": 2,
-        "scale": [0, 10],
-        "src": "OhmyNews.estimate-2026-07 (명세 4.3절)",
-        "estimated": true,
-        "note": "하위 3지표 균등 가중합. 하위 지표 자체가 자체 추정이다",
-        "sub": {
-          "north_korea_security": 3,
-          "gender_minority": 1.5,
-          "tradition_religion": 1.5,
-          "weights": [0.333, 0.333, 0.333]
-        }
-      },
-      "norms": {
-        "v": 0.1,
-        "scale": [0, 1],
-        "src": "OhmyNews.provisional-2026-07",
-        "estimated": true,
-        "band": "pluralist",
-        "note": "잠정 판정. 루브릭 Z-1~Z-4 코딩 미착수. 규범 관련 특기 신호를 확인하지 못해 유럽 주류 정당 수준으로 두었다"
-      },
-      "populism_tag": "none",
-      "foreign_tag": null,
-      "org": {
-        "institutionalization": "low",
-        "personalization": "mid",
-        "type": "movement"
-      },
-      "intl_affiliation": null
-    },
-    {
-      "id": "kr-sdp-2025",
-      "party_key": "kr-sdp",
-      "country": "KR",
-      "name_ko": "사회민주당",
-      "name_local": "사회민주당 (Social Democratic Party of Korea)",
-      "label_short": "사민당",
-      "family": "social_democracy",
-      "year": 2025,
-      "econ": {
-        "v": 2.5,
-        "scale": [0, 10],
-        "src": "OhmyNews.estimate-2026-07",
-        "estimated": true,
-        "note": "자체 추정. 유럽 사민당 계열(독일 SPD 3.71, 영국 노동당 1.94) 참조 구간. 강령·표결 코딩 미착수"
-      },
-      "cultural": {
-        "v": 2.5,
-        "scale": [0, 10],
-        "src": "OhmyNews.estimate-2026-07 (명세 4.3절)",
-        "estimated": true,
-        "note": "하위 3지표 균등 가중합. 하위 지표 자체가 자체 추정이다",
-        "sub": {
-          "north_korea_security": 3,
-          "gender_minority": 2,
-          "tradition_religion": 2.5,
-          "weights": [0.333, 0.333, 0.333]
-        }
-      },
-      "norms": {
-        "v": 0.1,
-        "scale": [0, 1],
-        "src": "OhmyNews.provisional-2026-07",
-        "estimated": true,
-        "band": "pluralist",
-        "note": "잠정 판정. 루브릭 Z-1~Z-4 코딩 미착수. 규범 관련 특기 신호를 확인하지 못해 유럽 주류 정당 수준으로 두었다"
-      },
-      "populism_tag": "none",
-      "foreign_tag": null,
-      "org": {
-        "institutionalization": "low",
-        "personalization": "low",
-        "type": "movement"
       },
       "intl_affiliation": null
     },

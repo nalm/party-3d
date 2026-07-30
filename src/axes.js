@@ -8,7 +8,9 @@ const AXIS_BY_KEY = Object.fromEntries(AXES.map((a) => [a.key, a]));
 
 // 값 → world 좌표. 각 축을 자기 척도 안에서 독립적으로 큐브 변장에 매핑한다.
 // 세 축의 값을 하나의 스케일로 합치는 정규화가 아니다 — CLAUDE.md 절대규칙 3.
-// invertScreen 축은 화면 방향만 뒤집는다(값 척도는 불변) — config.js AXES 주석 참조.
+// invertScreen 축은 화면 방향만 뒤집는다(값 척도는 불변).
+// 현재 이 플래그를 켠 축은 없다 — 어느 극을 위/앞에 둘지 바꿔야 할 때 쓰는 장치로
+// 남겨 둔다. 2D의 "GAL이 위"는 이 플래그와 별개로 view2d가 직접 고정한다.
 export function toWorld(v, axisKey) {
   const axis = AXIS_BY_KEY[axisKey];
   const [lo, hi] = axis.scale;

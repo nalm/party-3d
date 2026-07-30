@@ -19,6 +19,9 @@ function fillChrome() {
   };
   set('#banner strong', UI.bannerTitle);
   set('#banner span', UI.bannerBody);
+  // 하단 소형 배너는 본문이 말줄임되므로 전문을 툴팁으로 남긴다
+  const bannerEl = document.querySelector('#banner');
+  if (bannerEl) bannerEl.title = `${UI.bannerTitle} — ${UI.bannerBody}`;
   set('#titlebar h1', UI.title);
   set('#titlebar p', UI.subtitle);
   set('#legend h2', UI.bandLegendTitle);

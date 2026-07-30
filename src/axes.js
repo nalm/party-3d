@@ -8,9 +8,12 @@ const AXIS_BY_KEY = Object.fromEntries(AXES.map((a) => [a.key, a]));
 
 // 값 → world 좌표. 각 축을 자기 척도 안에서 독립적으로 큐브 변장에 매핑한다.
 // 세 축의 값을 하나의 스케일로 합치는 정규화가 아니다 — CLAUDE.md 절대규칙 3.
+// invertScreen 축은 화면 방향만 뒤집는다(값 척도는 불변) — config.js AXES 주석 참조.
 export function toWorld(v, axisKey) {
-  const [lo, hi] = AXIS_BY_KEY[axisKey].scale;
-  const t = (v - lo) / (hi - lo);
+  const axis = AXIS_BY_KEY[axisKey];
+  const [lo, hi] = axis.scale;
+  let t = (v - lo) / (hi - lo);
+  if (axis.invertScreen) t = 1 - t;
   return (t * 2 - 1) * SPACE.half;
 }
 
@@ -99,7 +102,9 @@ function buildAxis(axis) {
   }
 
   // 양극 라벨. 각 축은 스펙트럼이므로 단방향 화살표가 아니라 양쪽 모두 표기한다.
+  // invertScreen 축은 극의 화면 위치가 뒤집히므로 라벨도 반대 끝에 놓는다.
   const pad = SPACE.half + 1.5;
+  const lowEnd = axis.invertScreen ? pad : -pad;
   const low = makeLabel('', 'axis-pole', { color: axis.color });
   low.element.append(
     Object.assign(document.createElement('div'), { textContent: axis.poleLow }),
@@ -108,7 +113,7 @@ function buildAxis(axis) {
       style: 'font-size:10px;opacity:.7;font-weight:400',
     }),
   );
-  low.position.copy(dir.clone().multiplyScalar(-pad));
+  low.position.copy(dir.clone().multiplyScalar(lowEnd));
   group.add(low);
 
   const high = makeLabel('', 'axis-pole', { color: axis.color });
@@ -119,7 +124,7 @@ function buildAxis(axis) {
       style: 'font-size:10px;opacity:.7;font-weight:400',
     }),
   );
-  high.position.copy(dir.clone().multiplyScalar(pad));
+  high.position.copy(dir.clone().multiplyScalar(-lowEnd));
   group.add(high);
 
   return group;

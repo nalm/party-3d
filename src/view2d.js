@@ -53,8 +53,11 @@ export function createView2D(canvas, { items, trajectories }) {
   }
 
   const sx = (v) => plot.x + ((v - ECON.scale[0]) / (ECON.scale[1] - ECON.scale[0])) * plot.w;
-  // 문화축은 위가 TAN(10)이다. 3D의 Y 방향과 같게 맞춘다.
-  const sy = (v) => plot.y + plot.h - ((v - CULT.scale[0]) / (CULT.scale[1] - CULT.scale[0])) * plot.h;
+  // 문화축 세로 방향은 3D와 같은 invertScreen 플래그를 따른다 (현재: GAL이 위).
+  const sy = (v) => {
+    const t = (v - CULT.scale[0]) / (CULT.scale[1] - CULT.scale[0]);
+    return plot.y + (CULT.invertScreen ? t : 1 - t) * plot.h;
+  };
 
   function drawFrame() {
     ctx.save();
@@ -98,18 +101,22 @@ export function createView2D(canvas, { items, trajectories }) {
     ctx.textAlign = 'right';
     ctx.fillText(`${ECON.poleHigh} →`, plot.x + plot.w, plot.y + plot.h + 32);
 
+    // 세로 극 라벨. 회전 후 텍스트는 화면 위 방향으로 흐르므로,
+    // 위 모서리 라벨의 ←는 아래쪽 극을, 아래 모서리 라벨의 →는 위쪽 극을 가리킨다.
+    const poleTop = CULT.invertScreen ? CULT.poleLow : CULT.poleHigh;
+    const poleBottom = CULT.invertScreen ? CULT.poleHigh : CULT.poleLow;
     ctx.fillStyle = CULT.color;
     ctx.save();
     ctx.translate(plot.x - 34, plot.y);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'right';
-    ctx.fillText(`← ${CULT.poleLow}`, 0, 0);
+    ctx.fillText(`← ${poleBottom}`, 0, 0);
     ctx.restore();
     ctx.save();
     ctx.translate(plot.x - 34, plot.y + plot.h);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'left';
-    ctx.fillText(`${CULT.poleHigh} →`, 0, 0);
+    ctx.fillText(`${poleTop} →`, 0, 0);
     ctx.restore();
     ctx.restore();
   }

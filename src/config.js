@@ -43,6 +43,10 @@ export const AXES = [
     tickDecimals: 0,
     poleLow: 'GAL 자유 · 개방',
     poleHigh: 'TAN 권위 · 전통',
+    // 화면 매핑만 반전한다: GAL(0)이 위, TAN(10)이 아래 (2026-07-30 편집국 결정).
+    // 값 척도(0=GAL, 10=TAN)는 명세 그대로다 — 어느 극을 위에 둘지는 표현의 문제이고,
+    // 눈금·극 라벨·2D·PNG가 전부 이 플래그를 따르므로 판독에는 영향이 없다.
+    invertScreen: true,
   },
   {
     key: 'norms',

@@ -253,6 +253,10 @@ export const COUNTRY_TAG = {
 export const FILTER = {
   dimOpacity: 0.11,
   defaultHide: true,
+  // 처음 열었을 때 체크되는 국가 (2026-07-30 편집국 결정 — 독자의 출발점은
+  // 한국·미국 비교다). 리셋도 이 상태로 돌아온다. null이면 전체 선택.
+  // 데이터에 없는 코드는 조용히 무시되므로 국가 추가·삭제와 독립이다.
+  defaultCountries: ['KR', 'US'],
 };
 
 // 궤적. 같은 party_key의 연도별 이동을 화살표로 잇는다 — 이 앱의 최대 강점.

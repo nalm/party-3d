@@ -1,7 +1,7 @@
 import { UI, FILTER, labelOf } from './config.js';
 
 // 국가 · 정당 가족 · 연도 다중 선택 필터.
-// 걸러진 점을 숨기는 대신 흐리게 남기는 것이 기본이다 — config.FILTER 주석 참조.
+// 걸러진 점은 기본 완전 숨김, 국가는 기본 한국·미국만 선택 — config.FILTER 주석 참조.
 
 // 어떤 축으로 거를지. dict는 config.LABELS의 사전 이름이다.
 const FACETS = [
@@ -28,9 +28,19 @@ export function createFilters(host, parties, { onChange } = {}) {
     domain[f.key] = vals;
   }
 
+  // facet의 초기 선택. 국가는 config의 기본 목록(한국·미국)을 따르되,
+  // 데이터와의 교집합이 비면 전체 선택으로 후퇴한다 — 빈 화면으로 뜨는 것을 막는다.
+  function defaultSetFor(key) {
+    if (key === 'country' && FILTER.defaultCountries?.length) {
+      const picked = FILTER.defaultCountries.filter((c) => domain[key].includes(c));
+      if (picked.length) return new Set(picked);
+    }
+    return new Set(domain[key]);
+  }
+
   // 선택 상태. 비어 있지 않은 Set만 조건으로 쓴다.
   const state = {};
-  for (const f of FACETS) state[f.key] = new Set(domain[f.key]);
+  for (const f of FACETS) state[f.key] = defaultSetFor(f.key);
   let hide = FILTER.defaultHide;
 
   const boxes = {}; // key -> Map(value -> input)
@@ -68,7 +78,7 @@ export function createFilters(host, parties, { onChange } = {}) {
       const lab = el('label', 'chk');
       const input = el('input');
       input.type = 'checkbox';
-      input.checked = true;
+      input.checked = state[f.key].has(v);
       input.addEventListener('change', () => {
         if (input.checked) state[f.key].add(v);
         else state[f.key].delete(v);
@@ -111,10 +121,11 @@ export function createFilters(host, parties, { onChange } = {}) {
     boxes.__dimInput = dimInput;
   }
 
+  // 리셋은 '전체 선택'이 아니라 초기 기본값(국가: 한국·미국)으로 돌아온다.
   function reset() {
     for (const f of FACETS) {
-      state[f.key] = new Set(domain[f.key]);
-      for (const [, input] of boxes[f.key]) input.checked = true;
+      state[f.key] = defaultSetFor(f.key);
+      for (const [v, input] of boxes[f.key]) input.checked = state[f.key].has(v);
     }
     hide = FILTER.defaultHide;
     boxes.__dimInput.checked = !hide;

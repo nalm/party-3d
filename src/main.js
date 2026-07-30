@@ -27,8 +27,6 @@ function fillChrome() {
   set('#legend h2', UI.bandLegendTitle);
   set('#band-cut-caption', UI.bandCutCaption);
   set('#estimated-caption', UI.estimatedLegend);
-  set('#grid-caption', UI.gridCaption);
-  set('#independence-caption', UI.axisIndependenceNote);
   set('#country-legend h2', UI.countryLegendTitle);
   set('#country-legend-note', UI.countryLegendNote);
   renderBandLegend();

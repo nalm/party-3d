@@ -194,14 +194,6 @@
       .country-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
       .country-code { color: var(--dim); font-size: 9.5px; font-weight: 600; }
 
-      /* ── 하단 캡션 ── */
-      #captions {
-        position: fixed; bottom: calc(var(--banner-h) + 8px); z-index: 20;
-        left: calc(var(--sidebar-w) + 14px); right: calc(var(--panel-w) + 14px);
-        text-align: center; font-size: 11px; color: var(--dim);
-      }
-      #captions p { margin: 0 0 4px; }
-
       /* ── 호버·선택 라벨 ── */
       .point-label {
         font-size: 12px; font-weight: 700; white-space: nowrap;
@@ -300,7 +292,6 @@
 
       @media (max-width: 1180px) {
         :root { --sidebar-w: 224px; --panel-w: 300px; }
-        #captions { display: none; } /* 좁아지면 캡션이 뷰를 침범한다. 범례 하단으로 대체된다 */
       }
 
       /* 태블릿·모바일: 사이드바와 패널을 접히는 시트로 바꾸고 뷰가 전체 폭을 쓴다 */
@@ -319,7 +310,6 @@
         body.sheet-right #panel { transform: translateX(0); }
 
         #sheet-tabs { display: flex; }
-        #captions { display: none; }
       }
     </style>
   </head>
@@ -352,11 +342,6 @@
         <p class="hint" id="band-cut-caption"></p>
         <p class="hint" id="estimated-caption"></p>
       </div>
-    </div>
-
-    <div id="captions">
-      <p id="grid-caption"></p>
-      <p id="independence-caption"></p>
     </div>
 
     <aside id="panel"></aside>

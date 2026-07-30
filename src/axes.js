@@ -17,16 +17,19 @@ export function toWorld(v, axisKey) {
   return (t * 2 - 1) * SPACE.half;
 }
 
-// 레코드 → THREE.Vector3. econ→X, cultural→Y, norms→Z (config.js 상단 주석 참조)
+// 레코드 → THREE.Vector3. 어느 축이 X·Y·Z인지는 config.AXES의 threeAxis가 정한다.
+// 하드코딩하지 않는다 — 축 배치를 바꿀 때 이 함수를 고치지 않아도 되게.
 export function positionOf(rec) {
-  return new THREE.Vector3(
-    toWorld(rec.econ.v, 'econ'),
-    toWorld(rec.cultural.v, 'cultural'),
-    toWorld(rec.norms.v, 'norms'),
-  );
+  const p = new THREE.Vector3();
+  for (const axis of AXES) {
+    p[axis.threeAxis] = toWorld(rec[axis.key].v, axis.key);
+  }
+  return p;
 }
 
-// 드롭 라인이 닿는 바닥면의 world y
+// 드롭 라인이 닿는 바닥면의 world y.
+// 세로축이 규범이 된 뒤로 바닥면은 경제 × 사회·문화 평면 — 즉 2D 산점도 평면이다.
+// 따라서 드롭라인의 길이가 곧 규범 점수이고, 바닥의 그림자 위치가 2D 좌표다.
 export const FLOOR_Y = -SPACE.half;
 
 function unitVec(threeAxis) {

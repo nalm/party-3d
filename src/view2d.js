@@ -59,10 +59,12 @@ export function createView2D(canvas, { items, trajectories }) {
   }
 
   const sx = (v) => plot.x + ((v - ECON.scale[0]) / (ECON.scale[1] - ECON.scale[0])) * plot.w;
-  // 문화축 세로 방향은 3D와 같은 invertScreen 플래그를 따른다 (현재: GAL이 위).
+  // 2D는 GAL(0)이 위, TAN(10)이 아래로 고정이다 (2026-07-30 편집국 결정).
+  // 3D 축 배치와 무관하게 여기서 직접 정한다 — 2D는 경제 가로 · 사회·문화 세로가
+  // 명세 13.2절로 고정되어 있어 3D 플래그를 따라갈 필요가 없다.
   const sy = (v) => {
     const t = (v - CULT.scale[0]) / (CULT.scale[1] - CULT.scale[0]);
-    return plot.y + (CULT.invertScreen ? t : 1 - t) * plot.h;
+    return plot.y + t * plot.h;
   };
 
   function drawFrame() {
@@ -111,8 +113,9 @@ export function createView2D(canvas, { items, trajectories }) {
 
     // 세로 극 라벨. 회전 후 텍스트는 화면 위 방향으로 흐르므로,
     // 위 모서리 라벨의 ←는 아래쪽 극을, 아래 모서리 라벨의 →는 위쪽 극을 가리킨다.
-    const poleTop = CULT.invertScreen ? CULT.poleLow : CULT.poleHigh;
-    const poleBottom = CULT.invertScreen ? CULT.poleHigh : CULT.poleLow;
+    // sy()가 GAL을 위로 고정하므로 라벨도 그에 맞춘다
+    const poleTop = CULT.poleLow;
+    const poleBottom = CULT.poleHigh;
     ctx.fillStyle = CULT.color;
     ctx.save();
     ctx.translate(plot.x - 34, plot.y);

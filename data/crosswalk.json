@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "version": "0.1",
+    "generated": "2026-07-30",
+    "purpose": "parties.json 레코드 ↔ 원본 데이터셋 행 매칭 근거. 식별 매칭은 Party Facts ID(2026-07-30 편집국 결정), CHES 행은 (year, party_id)로 특정한다.",
+    "sources": {
+      "ches": "1999-2024_CHES_dataset_meansV2.csv (chesdata.eu). 1999-2019 트렌드 파일(Jolly et al. 2022)의 2024 확장판. CHES2019V3.csv와 2019 웨이브 값 일치 확인(2026-07-30)",
+      "partyfacts": "partyfacts-external.csv (partyfacts.org). dataset_key=ches / vparty 연결",
+      "vparty": "미확보 — V-Dem 다운로드 양식(이메일+약관 동의) 승인 대기. v2paid는 Party Facts ID와 동일하므로 partyfacts_id로 바로 조인 가능"
+    },
+    "year_rule": "V-Party는 선거 단위 관측. CHES 웨이브 연도의 앞뒤 불문 최근접 선거를 채택하고 실제 관측연도를 src에 명시, 차이 2년 초과 시 note 경고 (2026-07-30 편집국 결정)",
+    "notes": [
+      "de-cdu: CHES는 CDU(301)와 CSU(308)를 별도 코딩. CDU 단독 값 사용, CSU 제외 (2026-07-30 편집국 결정). 참고로 CSU 2019: lrecon 6.38, galtan 7.29",
+      "hu-fidesz: CHES party_id 2302는 2010년 'Fidesz-M', 2019년 'Fidesz-KDNP'(연합 표기)로 이름이 다르지만 같은 정당 행이다",
+      "fr-rn: party_id 610은 2010년 'FN', 2019년 'RN'. 당명 개칭이며 같은 행"
+    ]
+  },
+
+  "records": [
+    { "id": "de-cdu-2019",    "ches": { "year": 2019, "party_id": 301,  "party": "CDU" },        "partyfacts_id": 1375, "vparty_id": 1375, "vparty_election_year": null },
+    { "id": "de-spd-2019",    "ches": { "year": 2019, "party_id": 302,  "party": "SPD" },        "partyfacts_id": 383,  "vparty_id": 383,  "vparty_election_year": null },
+    { "id": "de-gruene-2019", "ches": { "year": 2019, "party_id": 304,  "party": "Grunen" },     "partyfacts_id": 1816, "vparty_id": 1816, "vparty_election_year": null },
+    { "id": "de-linke-2019",  "ches": { "year": 2019, "party_id": 306,  "party": "LINKE" },      "partyfacts_id": 1545, "vparty_id": 1545, "vparty_election_year": null },
+    { "id": "de-afd-2019",    "ches": { "year": 2019, "party_id": 310,  "party": "AfD" },        "partyfacts_id": 1976, "vparty_id": 1976, "vparty_election_year": null },
+    { "id": "fr-ren-2019",    "ches": { "year": 2019, "party_id": 626,  "party": "LREM" },       "partyfacts_id": 5857, "vparty_id": 5857, "vparty_election_year": null },
+    { "id": "fr-lfi-2019",    "ches": { "year": 2019, "party_id": 627,  "party": "FI" },         "partyfacts_id": 5858, "vparty_id": 5858, "vparty_election_year": null },
+    { "id": "fr-rn-2019",     "ches": { "year": 2019, "party_id": 610,  "party": "RN" },         "partyfacts_id": 433,  "vparty_id": 433,  "vparty_election_year": null },
+    { "id": "fr-fn-2010",     "ches": { "year": 2010, "party_id": 610,  "party": "FN" },         "partyfacts_id": 433,  "vparty_id": 433,  "vparty_election_year": null },
+    { "id": "uk-con-2019",    "ches": { "year": 2019, "party_id": 1101, "party": "CONS" },       "partyfacts_id": 1567, "vparty_id": 1567, "vparty_election_year": null },
+    { "id": "uk-lab-2019",    "ches": { "year": 2019, "party_id": 1102, "party": "LAB" },        "partyfacts_id": 1516, "vparty_id": 1516, "vparty_election_year": null },
+    { "id": "it-pd-2019",     "ches": { "year": 2019, "party_id": 837,  "party": "PD" },         "partyfacts_id": 802,  "vparty_id": 802,  "vparty_election_year": null },
+    { "id": "it-fdi-2019",    "ches": { "year": 2019, "party_id": 844,  "party": "FdI" },        "partyfacts_id": 2280, "vparty_id": 2280, "vparty_election_year": null },
+    { "id": "es-vox-2019",    "ches": { "year": 2019, "party_id": 527,  "party": "Vox" },        "partyfacts_id": 3218, "vparty_id": 3218, "vparty_election_year": null },
+    { "id": "hu-fidesz-2019", "ches": { "year": 2019, "party_id": 2302, "party": "Fidesz-KDNP" },"partyfacts_id": 1691, "vparty_id": 1691, "vparty_election_year": null },
+    { "id": "hu-fidesz-2010", "ches": { "year": 2010, "party_id": 2302, "party": "Fidesz-M" },   "partyfacts_id": 1691, "vparty_id": 1691, "vparty_election_year": null },
+    { "id": "pl-pis-2019",    "ches": { "year": 2019, "party_id": 2605, "party": "PiS" },        "partyfacts_id": 1565, "vparty_id": 1565, "vparty_election_year": null },
+    { "id": "pl-pis-2010",    "ches": { "year": 2010, "party_id": 2605, "party": "PiS" },        "partyfacts_id": 1565, "vparty_id": 1565, "vparty_election_year": null }
+  ]
+}

@@ -64,9 +64,10 @@ function subSection(rec) {
   return wrap;
 }
 
-// 축별 자리수. 규범축은 0–1이라 소수 두 자리, X·Y는 0–10이라 한 자리.
-function decimalsFor(axisData) {
-  return axisData.scale[1] <= 1 ? 2 : 1;
+// 축별 자리수. CHES 실측값이 소수 두 자리 정밀도이므로 전 축 두 자리로 표시한다.
+// 한 자리로 반올림하면 +0.32 같은 실측 이동이 +0.3으로 뭉개진다.
+function decimalsFor() {
+  return 2;
 }
 
 const FIXED_RATIO = 0.05; // 척도의 5% 미만 이동은 '거의 고정'으로 본다

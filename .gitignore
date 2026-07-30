@@ -3,3 +3,5 @@ dist/
 .omc/
 *.local
 .DS_Store
+
+.vercel

@@ -1,4 +1,4 @@
-import { VIEW2D, NORMS_BANDS, UI } from './config.js';
+import { VIEW2D, NORMS_BANDS, UI, labelOf } from './config.js';
 import { createView2D } from './view2d.js';
 import { shortSourceList } from './panel-source.js';
 
@@ -62,7 +62,14 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
   // 정하기 전에 재야 한다.
   const capFont = '10.5px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';
   ctx.font = capFont;
+  // 국가 코드 해독 키 — 이미지는 단독 유통되므로 코드만 있으면 읽을 수 없다
+  const countryKey = [...new Set(items.map((i) => i.rec.country))]
+    .sort()
+    .map((c) => `${c} ${labelOf('country', c)}`)
+    .join(' · ');
+
   const capLines = [
+    `${UI.pngCountryKey}: ${countryKey}`,
     `${UI.pngSourcePrefix}: ${shortSourceList(items.map((i) => i.rec))}`,
     UI.pngScaleNote,
     UI.pngCutNote(lo, hi),
@@ -99,6 +106,7 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
   const view = createView2D(chart, { items, trajectories });
   view.setShowLabels(true); // 인쇄용이므로 라벨을 켠다
   view.setShowTicks(true); // 화면 설정과 무관하게 인쇄물에는 척도 숫자가 필요하다
+  view.setShowCountry(true); // 국가 코드도 항상 — 하단에 해독 키를 함께 넣는다
   view.draw({ cssW: CHART_W, cssH: CHART_H, dpr: S });
   ctx.drawImage(chart, 0, WARN_H + TITLE_H, CHART_W, CHART_H);
 

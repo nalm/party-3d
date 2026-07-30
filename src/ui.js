@@ -1,4 +1,4 @@
-import { UI, CAMERA, NORMS_BANDS, TRAJECTORY } from './config.js';
+import { UI, CAMERA, NORMS_BANDS, TRAJECTORY, COUNTRY_TAG } from './config.js';
 
 // 카메라 프리셋 · 규범 구간 절단점 슬라이더 · 리셋.
 // 절단점은 명세의 제안값일 뿐이므로 UI에서 조절 가능해야 한다 — CLAUDE.md「구간 절단점은 하드코딩 금지」.
@@ -13,7 +13,7 @@ function el(tag, cls, text) {
 }
 
 // 2D/3D 전환 · 전체 라벨 토글 · PNG 내보내기. 사이드바 맨 위에 둔다.
-export function createViewUI(host, { onMode, onLabels, onTicks, onExport, initialMode = '3d' }) {
+export function createViewUI(host, { onMode, onLabels, onTicks, onCountry, onExport, initialMode = '3d' }) {
   host.append(el('h2', null, UI.secView));
 
   const seg = el('div', 'seg');
@@ -32,6 +32,15 @@ export function createViewUI(host, { onMode, onLabels, onTicks, onExport, initia
   ticksInput.addEventListener('change', () => onTicks?.(ticksInput.checked));
   ticksWrap.append(ticksInput, el('span', null, UI.showTicks));
   const ticksNote = el('p', 'hint', UI.showTicksNote);
+
+  // 국가 코드. 기본 켬 — 3D·2D 공통이며 PNG에는 해독 키와 함께 항상 포함된다.
+  const countryWrap = el('label', 'chk');
+  const countryInput = el('input');
+  countryInput.type = 'checkbox';
+  countryInput.checked = COUNTRY_TAG.defaultVisible;
+  countryInput.addEventListener('change', () => onCountry?.(countryInput.checked));
+  countryWrap.append(countryInput, el('span', null, UI.showCountry));
+  const countryNote = el('p', 'hint', UI.showCountryNote);
   const labelsWrap = el('label', 'chk');
   const labelsInput = el('input');
   labelsInput.type = 'checkbox';
@@ -60,7 +69,7 @@ export function createViewUI(host, { onMode, onLabels, onTicks, onExport, initia
   b3.addEventListener('click', () => set('3d'));
   b2.addEventListener('click', () => set('2d'));
 
-  host.append(note, ticksWrap, ticksNote, labelsWrap, labelsNote);
+  host.append(note, countryWrap, countryNote, ticksWrap, ticksNote, labelsWrap, labelsNote);
 
   const exportBtn = el('button', 'export-btn', UI.exportPng);
   exportBtn.addEventListener('click', () => onExport?.());

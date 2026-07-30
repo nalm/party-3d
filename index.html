@@ -58,6 +58,17 @@
       #labels .axis-tick { display: none; }
       body.show-ticks #labels .axis-tick { display: block; }
 
+      /* 국가 코드 태그. 래퍼는 크기 0으로 두어 점 중심에 앵커되게 하고,
+         안쪽 span만 화면 오른쪽·위로 밀어낸다 (래퍼 transform은 CSS2DRenderer가 씀). */
+      .country-tag { position: relative; width: 0; height: 0; }
+      .country-tag span {
+        position: absolute; left: 10px; top: -17px;
+        font-size: 9.5px; font-weight: 600; letter-spacing: .02em;
+        color: #7f8b9c; white-space: nowrap;
+        text-shadow: 0 0 4px rgba(14,17,22,.95), 0 0 2px rgba(14,17,22,1);
+      }
+      body:not(.show-country) #labels .country-tag { display: none; }
+
       /* ── 하단 경고 배너 (2026-07-30 편집국 결정: 상단 대형 → 하단 소형) ──
          PNG 내보내기의 경고 각인은 그대로 크게 유지된다. 이미지는 단독 유통되기 때문. */
       #banner {

@@ -1,4 +1,4 @@
-import { UI, NORMS_BANDS, CAMERA } from './config.js';
+import { UI, NORMS_BANDS, CAMERA, COUNTRY_TAG } from './config.js';
 import { createScene } from './scene.js';
 import { buildSpace } from './axes.js';
 import { loadParties } from './data.js';
@@ -61,6 +61,8 @@ function renderBandLegend() {
 
 function main() {
   fillChrome();
+  // 국가 코드는 기본 켬 — CSS 게이트의 초기 상태를 토글 기본값과 맞춘다
+  document.body.classList.toggle('show-country', COUNTRY_TAG.defaultVisible);
 
   const ctx = createScene(document.querySelector('#view'), document.querySelector('#labels'));
   const { scene, camera, renderer, flyTo, start, tick } = ctx;
@@ -208,6 +210,11 @@ function main() {
     onTicks: (on) => {
       document.body.classList.toggle('show-ticks', on);
       view2d.setShowTicks(on);
+      draw2D();
+    },
+    onCountry: (on) => {
+      document.body.classList.toggle('show-country', on);
+      view2d.setShowCountry(on);
       draw2D();
     },
     onExport: () => {

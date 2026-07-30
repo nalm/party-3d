@@ -1,4 +1,4 @@
-import { AXES, NORMS_BANDS, VIEW2D, UI, bandOf } from './config.js';
+import { AXES, NORMS_BANDS, VIEW2D, UI, COUNTRY_TAG, bandOf } from './config.js';
 
 // 2D 대체 뷰. X-Y 산점도 + 규범을 색·도형으로 이중 인코딩 — 명세 13.2절.
 // Canvas 2D를 쓰는 이유: PNG 내보내기가 목적이고, 인쇄 배율로 다시 그리기가 쉽다.
@@ -40,6 +40,7 @@ export function createView2D(canvas, { items, trajectories }) {
   let showLabels = true;
   // 눈금 숫자는 화면에서 기본 숨김. PNG 내보내기는 setShowTicks(true)로 켠다.
   let showTicks = false;
+  let showCountry = COUNTRY_TAG.defaultVisible;
   // 필터 숨김 모드: 걸러진 점을 흐리게가 아니라 아예 그리지 않는다.
   let hideFiltered = true;
 
@@ -221,6 +222,29 @@ export function createView2D(canvas, { items, trajectories }) {
     const hits = (r) => placed.some((p) =>
       r.x < p.x + p.w && r.x + r.w > p.x && r.y < p.y + p.h && r.y + r.h > p.y);
 
+    // 국가 코드를 먼저 고정 위치에 찍고 그 영역을 예약한다.
+    // 정당명 라벨이 나중에 배치되며 이 영역을 피한다.
+    if (showCountry) {
+      ctx.font = COUNTRY_TAG.font;
+      ctx.fillStyle = COUNTRY_TAG.color;
+      ctx.textAlign = 'left';
+      for (const item of items) {
+        if (hideFiltered && !item.matched) continue;
+        const pos = screen.get(item.rec.id);
+        if (!pos) continue;
+        const code = item.rec.country;
+        const tx = pos.x + COUNTRY_TAG.offsetX;
+        const ty = pos.y + COUNTRY_TAG.offsetY;
+        ctx.globalAlpha = item.matched ? 1 : VIEW2D.dimAlpha;
+        ctx.fillText(code, tx, ty);
+        ctx.globalAlpha = 1;
+        placed.push({
+          x: tx, y: ty - COUNTRY_TAG.tagBoxH + 1,
+          w: ctx.measureText(code).width, h: COUNTRY_TAG.tagBoxH,
+        });
+      }
+    }
+
     // 선택·호버·궤적 끝점을 먼저 배치해 우선권을 준다
     const trajIds = new Set();
     if (trajectories) {
@@ -317,7 +341,9 @@ export function createView2D(canvas, { items, trajectories }) {
     setShowLabels(v) { showLabels = v; },
     getShowLabels: () => showLabels,
     setShowTicks(v) { showTicks = v; },
+    setShowCountry(v) { showCountry = v; },
     setHideFiltered(v) { hideFiltered = v; },
+    countriesShown: () => [...new Set(items.filter((i) => i.matched).map((i) => i.rec.country))].sort(),
     skippedLabels: () => lastSkipped,
     plotRect: () => ({ ...plot }),
   };

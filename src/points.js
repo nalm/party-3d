@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { NORMS_BANDS, POINT, ESTIMATED, DROPLINE, FILTER, bandOf } from './config.js';
+import { NORMS_BANDS, POINT, ESTIMATED, DROPLINE, FILTER, COUNTRY_TAG, bandOf } from './config.js';
+import { makeLabel } from './labels.js';
 import { positionOf, FLOOR_Y } from './axes.js';
 
 // 정당 점 · 드롭라인 · 규범 구간 인코딩.
@@ -95,8 +96,17 @@ export function buildPoints(scene, parties) {
     const dropline = buildDropLine(pos);
     group.add(dropline);
 
+    // 국가 코드 태그. 래퍼는 크기 0이고 안쪽 span만 화면 오른쪽으로 밀어낸다 —
+    // CSS2DRenderer가 래퍼의 transform을 덮어쓰므로 래퍼 자체는 옮길 수 없다.
+    // 카메라를 돌려도 항상 점의 화면 오른쪽에 붙는다.
+    const tag = makeLabel('', 'country-tag');
+    tag.element.append(
+      Object.assign(document.createElement('span'), { textContent: rec.country }),
+    );
+    mesh.add(tag);
+
     items.push({
-      rec, mesh, shell, dropline, band,
+      rec, mesh, shell, dropline, band, tag,
       baseOpacity: estimated ? ESTIMATED.opacity : 1,
       matched: true,
     });
@@ -135,6 +145,8 @@ export function buildPoints(scene, parties) {
 
       item.dropline.visible = on;
       if (item.shell) item.shell.visible = on;
+      // CSS2DRenderer가 부모의 visible을 항상 존중하지는 않으므로 직접 끈다
+      item.tag.visible = on;
     }
     return shown;
   }

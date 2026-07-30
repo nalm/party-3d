@@ -98,6 +98,7 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
   const chart = document.createElement('canvas');
   const view = createView2D(chart, { items, trajectories });
   view.setShowLabels(true); // 인쇄용이므로 라벨을 켠다
+  view.setShowTicks(true); // 화면 설정과 무관하게 인쇄물에는 척도 숫자가 필요하다
   view.draw({ cssW: CHART_W, cssH: CHART_H, dpr: S });
   ctx.drawImage(chart, 0, WARN_H + TITLE_H, CHART_W, CHART_H);
 

@@ -13,7 +13,7 @@ function el(tag, cls, text) {
 }
 
 // 2D/3D 전환 · 전체 라벨 토글 · PNG 내보내기. 사이드바 맨 위에 둔다.
-export function createViewUI(host, { onMode, onLabels, onExport, initialMode = '3d' }) {
+export function createViewUI(host, { onMode, onLabels, onTicks, onExport, initialMode = '3d' }) {
   host.append(el('h2', null, UI.secView));
 
   const seg = el('div', 'seg');
@@ -23,6 +23,15 @@ export function createViewUI(host, { onMode, onLabels, onExport, initialMode = '
   host.append(seg);
 
   const note = el('p', 'hint');
+
+  // 축 눈금 숫자. 기본 숨김 — 3D·2D 공통이며 PNG에는 항상 포함된다.
+  const ticksWrap = el('label', 'chk');
+  const ticksInput = el('input');
+  ticksInput.type = 'checkbox';
+  ticksInput.checked = false;
+  ticksInput.addEventListener('change', () => onTicks?.(ticksInput.checked));
+  ticksWrap.append(ticksInput, el('span', null, UI.showTicks));
+  const ticksNote = el('p', 'hint', UI.showTicksNote);
   const labelsWrap = el('label', 'chk');
   const labelsInput = el('input');
   labelsInput.type = 'checkbox';
@@ -51,7 +60,7 @@ export function createViewUI(host, { onMode, onLabels, onExport, initialMode = '
   b3.addEventListener('click', () => set('3d'));
   b2.addEventListener('click', () => set('2d'));
 
-  host.append(note, labelsWrap, labelsNote);
+  host.append(note, ticksWrap, ticksNote, labelsWrap, labelsNote);
 
   const exportBtn = el('button', 'export-btn', UI.exportPng);
   exportBtn.addEventListener('click', () => onExport?.());

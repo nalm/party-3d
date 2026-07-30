@@ -38,9 +38,14 @@ export function createView2D(canvas, { items, trajectories }) {
   const ctx = canvas.getContext('2d');
   let plot = { x: 0, y: 0, w: 1, h: 1 };
   let showLabels = true;
+  // 눈금 숫자는 화면에서 기본 숨김. PNG 내보내기는 setShowTicks(true)로 켠다.
+  let showTicks = false;
+  // 필터 숨김 모드: 걸러진 점을 흐리게가 아니라 아예 그리지 않는다.
+  let hideFiltered = true;
 
   // 히트 테스트를 위해 마지막으로 그린 화면 좌표를 기억한다
   const screen = new Map();
+  const itemById = new Map(items.map((i) => [i.rec.id, i]));
 
   function layout(cssW, cssH) {
     const m = VIEW2D.margin;
@@ -82,15 +87,17 @@ export function createView2D(canvas, { items, trajectories }) {
     ctx.lineWidth = 1.2;
     ctx.strokeRect(plot.x + 0.5, plot.y + 0.5, plot.w, plot.h);
 
-    // 눈금 값
-    ctx.fillStyle = VIEW2D.tickText;
-    ctx.font = VIEW2D.tickFont;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    for (const v of ticksOf(ECON)) ctx.fillText(String(v), sx(v), plot.y + plot.h + 6);
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for (const v of ticksOf(CULT)) ctx.fillText(String(v), plot.x - 7, sy(v));
+    // 눈금 값 — 기본 숨김 (격자선은 유지)
+    if (showTicks) {
+      ctx.fillStyle = VIEW2D.tickText;
+      ctx.font = VIEW2D.tickFont;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      for (const v of ticksOf(ECON)) ctx.fillText(String(v), sx(v), plot.y + plot.h + 6);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (const v of ticksOf(CULT)) ctx.fillText(String(v), plot.x - 7, sy(v));
+    }
 
     // 축 양극 라벨. 각 축은 스펙트럼이므로 양쪽 모두 표기한다.
     ctx.font = VIEW2D.poleFont;
@@ -129,6 +136,9 @@ export function createView2D(canvas, { items, trajectories }) {
     ctx.lineWidth = VIEW2D.trajWidth;
 
     for (const recs of trajectories.values()) {
+      // 레코드가 하나라도 필터에 걸러졌으면 궤적을 그리지 않는다 —
+      // 점 없는 화살표가 허공에 남는 것을 막는다
+      if (!recs.every((r) => itemById.get(r.id)?.matched)) continue;
       for (let i = 0; i < recs.length - 1; i++) {
         const a = recs[i];
         const b = recs[i + 1];
@@ -171,6 +181,7 @@ export function createView2D(canvas, { items, trajectories }) {
   function drawPoints(selectedId, hoveredId) {
     screen.clear();
     for (const item of items) {
+      if (hideFiltered && !item.matched) continue;
       const rec = item.rec;
       const band = bandOf(rec.norms.v);
       const meta = NORMS_BANDS.meta[band];
@@ -305,6 +316,8 @@ export function createView2D(canvas, { items, trajectories }) {
     hitTest,
     setShowLabels(v) { showLabels = v; },
     getShowLabels: () => showLabels,
+    setShowTicks(v) { showTicks = v; },
+    setHideFiltered(v) { hideFiltered = v; },
     skippedLabels: () => lastSkipped,
     plotRect: () => ({ ...plot }),
   };

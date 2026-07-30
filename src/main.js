@@ -150,6 +150,7 @@ function main() {
     filters.setCount(shown, points.items.length);
     picker.syncFilter();
     traj.syncFilter();
+    view2d.setHideFiltered(filters.isHiding());
     draw2D();
   }
 
@@ -202,6 +203,11 @@ function main() {
     },
     onLabels: (on) => {
       view2d.setShowLabels(on);
+      draw2D();
+    },
+    onTicks: (on) => {
+      document.body.classList.toggle('show-ticks', on);
+      view2d.setShowTicks(on);
       draw2D();
     },
     onExport: () => {

@@ -53,6 +53,10 @@
         font-size: 10px; color: var(--dim); white-space: nowrap;
         text-shadow: 0 0 5px rgba(0,0,0,.95);
       }
+      /* 축 눈금 숫자는 기본 숨김 — 뷰 섹션의 토글이 body.show-ticks를 단다.
+         PNG 내보내기는 별도 캔버스라 이 설정과 무관하게 항상 숫자를 그린다. */
+      #labels .axis-tick { display: none; }
+      body.show-ticks #labels .axis-tick { display: block; }
 
       /* ── 하단 경고 배너 (2026-07-30 편집국 결정: 상단 대형 → 하단 소형) ──
          PNG 내보내기의 경고 각인은 그대로 크게 유지된다. 이미지는 단독 유통되기 때문. */

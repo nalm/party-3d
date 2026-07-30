@@ -115,11 +115,12 @@ export function buildTrajectories(scene, parties, items) {
 
   function apply() {
     group.visible = visible;
-    for (const { labels } of built.values()) {
-      for (const { lab, item } of labels) {
-        // 필터에 걸러진 점의 궤적 라벨은 띄우지 않는다
-        lab.visible = visible && item.matched;
-      }
+    for (const { arrows, labels } of built.values()) {
+      // 궤적의 어느 끝점이라도 필터에 걸러지면 화살표째 숨긴다 —
+      // 점이 숨겨진 채 화살표만 허공에 남는 것을 막는다
+      const allMatched = labels.length > 0 && labels.every(({ item }) => item.matched);
+      for (const a of arrows) a.visible = allMatched;
+      for (const { lab } of labels) lab.visible = visible && allMatched;
     }
   }
 

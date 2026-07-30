@@ -159,12 +159,11 @@ export const TICK = {
 };
 
 // 필터에 걸러진 점의 처리.
-// 기본을 '숨기기'가 아니라 '흐리게'로 둔 이유: 이 앱의 목적은 비교다. 걸러진 점을
-// 완전히 없애면 남은 점이 전체 분포에서 어디쯤인지 알 수 없다. 다만 드롭라인과
-// 라벨은 걷어낸다 — 20개가 다 남으면 어지러워 판독이 안 된다.
+// 기본은 '완전 숨김'이다 (2026-07-30 편집국 결정 — 흐린 점이 시각적 소음이라는 판단).
+// '흐리게 남기기' 토글로 전체 분포 참조가 필요할 때만 되살린다.
 export const FILTER = {
   dimOpacity: 0.11,
-  defaultHide: false,
+  defaultHide: true,
 };
 
 // 궤적. 같은 party_key의 연도별 이동을 화살표로 잇는다 — 이 앱의 최대 강점.
@@ -269,8 +268,8 @@ export const UI = {
   filterYear: '연도',
   filterAll: '전체',
   filterNone: '해제',
-  filterHideLabel: '걸러진 점 숨기기',
-  filterHideHint: '기본은 흐리게다. 걸러진 점을 남겨 두면 남은 점이 전체 분포에서 어디쯤인지 읽을 수 있다.',
+  filterDimLabel: '걸러진 점 흐리게 남기기',
+  filterDimHint: '기본은 완전 숨김이다. 흐리게 남기면 남은 점이 전체 분포에서 어디쯤인지 읽을 수 있다.',
   filterCount: (shown, total) => `${shown} / ${total} 표시`,
 
   secCamera: '시점',
@@ -287,6 +286,8 @@ export const UI = {
   view2d: '2D 산점도',
   viewNote3d: '회전·확대로 세 축을 함께 본다. 깊이는 드롭라인으로 읽는다.',
   viewNote2d: '경제 × 사회·문화 산점도. 규범축은 색과 도형으로 이중 인코딩된다. 보도·인쇄용 정본이다.',
+  showTicks: '축 눈금 숫자 표시',
+  showTicksNote: '기본은 숨김이다. PNG 내보내기에는 척도 판독을 위해 항상 포함된다.',
   view2dLabels: '전체 라벨 표시',
   view2dLabelsNote: '인쇄용이므로 2D에서는 기본으로 켠다. 겹치는 라벨은 자동으로 생략된다.',
   exportPng: 'PNG 내보내기',
@@ -326,7 +327,7 @@ export const UI = {
 export const LABELS = {
   country: {
     DE: '독일', FR: '프랑스', GB: '영국', IT: '이탈리아',
-    ES: '스페인', HU: '헝가리', PL: '폴란드', KR: '한국',
+    ES: '스페인', HU: '헝가리', PL: '폴란드', KR: '한국', US: '미국',
   },
   family: {
     christian_democracy: '기독교민주주의',

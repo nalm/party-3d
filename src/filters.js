@@ -93,21 +93,22 @@ export function createFilters(host, parties, { onChange } = {}) {
     host.append(el('h2', null, UI.secFilter));
     for (const f of FACETS) host.append(buildFacet(f));
 
-    const hideLab = el('label', 'chk hide-toggle');
-    const hideInput = el('input');
-    hideInput.type = 'checkbox';
-    hideInput.checked = hide;
-    hideInput.addEventListener('change', () => {
-      hide = hideInput.checked;
+    // 체크박스 의미는 '흐리게 남기기'(= 숨김 해제)다. 내부 상태 hide와 반대 극성.
+    const dimLab = el('label', 'chk hide-toggle');
+    const dimInput = el('input');
+    dimInput.type = 'checkbox';
+    dimInput.checked = !hide;
+    dimInput.addEventListener('change', () => {
+      hide = !dimInput.checked;
       emit();
     });
-    hideLab.append(hideInput, el('span', null, UI.filterHideLabel));
-    host.append(hideLab);
-    host.append(el('p', 'hint', UI.filterHideHint));
+    dimLab.append(dimInput, el('span', null, UI.filterDimLabel));
+    host.append(dimLab);
+    host.append(el('p', 'hint', UI.filterDimHint));
     host.append(countEl);
 
     // 리셋에서 되돌릴 수 있게 참조를 남긴다
-    boxes.__hideInput = hideInput;
+    boxes.__dimInput = dimInput;
   }
 
   function reset() {
@@ -116,7 +117,7 @@ export function createFilters(host, parties, { onChange } = {}) {
       for (const [, input] of boxes[f.key]) input.checked = true;
     }
     hide = FILTER.defaultHide;
-    boxes.__hideInput.checked = hide;
+    boxes.__dimInput.checked = !hide;
     emit();
   }
 

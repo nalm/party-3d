@@ -13,7 +13,9 @@ function el(tag, cls, text) {
 }
 
 // 2D/3D 전환 · 전체 라벨 토글 · PNG 내보내기. 사이드바 맨 위에 둔다.
-export function createViewUI(host, { onMode, onLabels, onTicks, onCountry, onExport, initialMode = '3d' }) {
+export function createViewUI(host, {
+  onMode, onLabels, onTicks, onCountry, onNames, onExport, initialMode = '3d',
+}) {
   host.append(el('h2', null, UI.secView));
 
   const seg = el('div', 'seg');
@@ -41,6 +43,16 @@ export function createViewUI(host, { onMode, onLabels, onTicks, onCountry, onExp
   countryInput.addEventListener('change', () => onCountry?.(countryInput.checked));
   countryWrap.append(countryInput, el('span', null, UI.showCountry));
   const countryNote = el('p', 'hint', UI.showCountryNote);
+
+  // 상시 정당명. 3D는 겹치는 이름을 프레임마다 컬링한다.
+  const namesWrap = el('label', 'chk');
+  const namesInput = el('input');
+  namesInput.type = 'checkbox';
+  namesInput.checked = true;
+  namesInput.addEventListener('change', () => onNames?.(namesInput.checked));
+  namesWrap.append(namesInput, el('span', null, UI.showPartyNames));
+  const namesNote = el('p', 'hint', UI.showPartyNamesNote);
+  const namesCount = el('p', 'hint');
   const labelsWrap = el('label', 'chk');
   const labelsInput = el('input');
   labelsInput.type = 'checkbox';
@@ -69,14 +81,29 @@ export function createViewUI(host, { onMode, onLabels, onTicks, onCountry, onExp
   b3.addEventListener('click', () => set('3d'));
   b2.addEventListener('click', () => set('2d'));
 
-  host.append(note, countryWrap, countryNote, ticksWrap, ticksNote, labelsWrap, labelsNote);
+  host.append(
+    note,
+    namesWrap, namesNote, namesCount,
+    countryWrap, countryNote,
+    ticksWrap, ticksNote,
+    labelsWrap, labelsNote,
+  );
 
   const exportBtn = el('button', 'export-btn', UI.exportPng);
   exportBtn.addEventListener('click', () => onExport?.());
   host.append(exportBtn, el('p', 'hint', UI.exportNote));
 
   paint();
-  return { getMode: () => mode, set };
+  return {
+    getMode: () => mode,
+    set,
+    // 프레임마다 갱신되는 컬링 개수 표시 (3D에서만 의미 있다)
+    setCulledCount(n) {
+      namesCount.textContent = mode === '3d' && namesInput.checked
+        ? UI.partyNamesHidden(n)
+        : '';
+    },
+  };
 }
 
 export function createControlsUI(host, { flyTo, onCutChange, onReset, trajectory, onTrajFilter }) {

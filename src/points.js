@@ -1,5 +1,8 @@
 import * as THREE from 'three';
-import { NORMS_BANDS, POINT, ESTIMATED, DROPLINE, FILTER, COUNTRY_TAG, bandOf } from './config.js';
+import {
+  NORMS_BANDS, POINT, ESTIMATED, DROPLINE, FILTER, COUNTRY_TAG,
+  bandOf, countryColorHex,
+} from './config.js';
 import { makeLabel } from './labels.js';
 import { positionOf, FLOOR_Y } from './axes.js';
 
@@ -37,7 +40,9 @@ function isEstimated(rec) {
   return rec.econ.estimated || rec.cultural.estimated || rec.norms.estimated;
 }
 
-function buildDropLine(pos) {
+// 드롭라인 색은 규범 구간을 나타낸다. 점 채움색이 국가로 넘어갔으므로 규범이
+// 색 채널을 유지하는 자리다 — config.COUNTRY_COLORS 주석 참조.
+function buildDropLine(pos, bandColorHex) {
   const geo = new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(pos.x, pos.y, pos.z),
     new THREE.Vector3(pos.x, FLOOR_Y, pos.z),
@@ -45,9 +50,9 @@ function buildDropLine(pos) {
   return new THREE.Line(
     geo,
     new THREE.LineBasicMaterial({
-      color: DROPLINE.color,
+      color: bandColorHex,
       transparent: true,
-      opacity: DROPLINE.opacity,
+      opacity: DROPLINE.bandOpacity,
     }),
   );
 }
@@ -62,8 +67,9 @@ export function buildPoints(scene, parties) {
     const meta = NORMS_BANDS.meta[band];
     const estimated = isEstimated(rec);
 
+    // 채움색 = 국가. 규범 구간은 도형 + 드롭라인 색이 담당한다.
     const material = new THREE.MeshStandardMaterial({
-      color: meta.colorHex,
+      color: countryColorHex(rec.country),
       roughness: POINT.roughness,
       metalness: POINT.metalness,
       transparent: estimated,
@@ -93,7 +99,7 @@ export function buildPoints(scene, parties) {
       group.add(shell);
     }
 
-    const dropline = buildDropLine(pos);
+    const dropline = buildDropLine(pos, meta.colorHex);
     group.add(dropline);
 
     // 국가 코드 태그. 래퍼는 크기 0이고 안쪽 span만 화면 오른쪽으로 밀어낸다 —
@@ -105,8 +111,16 @@ export function buildPoints(scene, parties) {
     );
     mesh.add(tag);
 
+    // 상시 정당명. 같은 래퍼 기법이며 겹침은 프레임마다 컬링한다(cullPartyNames).
+    const nameTag = makeLabel('', 'party-name');
+    const nameSpan = Object.assign(document.createElement('span'), {
+      textContent: rec.label_short,
+    });
+    nameTag.element.append(nameSpan);
+    mesh.add(nameTag);
+
     items.push({
-      rec, mesh, shell, dropline, band, tag,
+      rec, mesh, shell, dropline, band, tag, nameTag, nameSpan,
       baseOpacity: estimated ? ESTIMATED.opacity : 1,
       matched: true,
     });
@@ -121,7 +135,8 @@ export function buildPoints(scene, parties) {
       if (band === item.band) continue;
       const meta = NORMS_BANDS.meta[band];
       item.mesh.geometry = shapeGeometry(meta.shape);
-      item.mesh.material.color.setHex(meta.colorHex);
+      // 점 채움색은 국가라서 건드리지 않는다. 규범 색은 드롭라인이 담당한다.
+      item.dropline.material.color.setHex(meta.colorHex);
       if (item.shell) item.shell.geometry = shellGeometry(meta.shape);
       item.band = band;
     }
@@ -147,9 +162,82 @@ export function buildPoints(scene, parties) {
       if (item.shell) item.shell.visible = on;
       // CSS2DRenderer가 부모의 visible을 항상 존중하지는 않으므로 직접 끈다
       item.tag.visible = on;
+      item.nameTag.visible = on;
     }
     return shown;
   }
 
-  return { group, items, applyBands, applyFilter };
+  // ── 상시 정당명 겹침 컬링 ──
+  // 3D는 카메라가 돌면 라벨 위치가 매 프레임 바뀌므로 2D처럼 한 번 배치하고 끝낼 수
+  // 없다. 프레임마다 화면 좌표를 구해 가까운 점부터 자리를 잡고, 이미 놓인 사각형과
+  // 겹치는 이름은 숨긴다. 이것이 CLAUDE.md「상시 표시되는 전체 라벨」 금지의 근거였던
+  // "겹쳐서 읽을 수 없다"를 해소하는 장치다.
+  let showNames = true;
+  let culledCount = 0;
+
+  const _v = new THREE.Vector3();
+  const _boxes = [];
+  const _order = [];
+
+  function cullPartyNames(camera, viewW, viewH) {
+    if (!showNames) {
+      for (const item of items) item.nameSpan.style.visibility = 'hidden';
+      culledCount = 0;
+      return;
+    }
+
+    _boxes.length = 0;
+    _order.length = 0;
+
+    for (const item of items) {
+      if (!item.matched) {
+        item.nameSpan.style.visibility = 'hidden';
+        continue;
+      }
+      _v.copy(item.mesh.position).project(camera);
+      // 절두체 밖이면 그릴 필요가 없다
+      if (_v.z < -1 || _v.z > 1 || Math.abs(_v.x) > 1.05 || Math.abs(_v.y) > 1.05) {
+        item.nameSpan.style.visibility = 'hidden';
+        continue;
+      }
+      _order.push({
+        item,
+        depth: _v.z,
+        x: (_v.x + 1) / 2 * viewW,
+        y: (-_v.y + 1) / 2 * viewH,
+      });
+    }
+
+    // 카메라에 가까운 점이 이름을 갖는다
+    _order.sort((a, b) => a.depth - b.depth);
+
+    let culled = 0;
+    for (const o of _order) {
+      // 실제 렌더 폭을 재면 레이아웃을 강제로 계산하게 되어 프레임마다 비싸다.
+      // 글자당 근사 폭으로 충분하다 — 컬링이 조금 보수적으로 동작할 뿐이다.
+      const w = o.item.rec.label_short.length * POINT.nameCharWidth + 6;
+      const h = POINT.nameBoxH;
+      // CSS의 .party-name span { left: 10px; top: 4px } 와 같은 상자여야 한다
+      const x = o.x + POINT.nameOffsetX;
+      const y = o.y + POINT.nameOffsetY;
+
+      const clash = _boxes.some((b) =>
+        x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y);
+
+      if (clash) {
+        o.item.nameSpan.style.visibility = 'hidden';
+        culled++;
+      } else {
+        o.item.nameSpan.style.visibility = 'visible';
+        _boxes.push({ x, y, w, h });
+      }
+    }
+    culledCount = culled;
+  }
+
+  return {
+    group, items, applyBands, applyFilter, cullPartyNames,
+    setShowNames(v) { showNames = v; },
+    culledNames: () => culledCount,
+  };
 }

@@ -86,12 +86,20 @@ export function bandOf(v, cut = NORMS_BANDS.cut) {
 export const POINT = {
   radius: 0.34,
   sphereSegments: 24,
-  // 축(불투명 라인)과 재질을 분명히 구분한다. 규범 구간 파랑과 경제축 파랑이
-  // 같은 값이라 재질 차이가 유일한 변별 수단이다 — CLAUDE.md「인코딩」.
-  roughness: 0.28,
-  metalness: 0.35,
+  // 축(불투명 라인)과 재질을 분명히 구분한다 — CLAUDE.md「인코딩」.
+  // 원래 roughness 0.28 / metalness 0.35였으나, 채움색이 국가로 넘어간 뒤
+  // 8면체·4면체의 평평한 면이 조명을 정면으로 받으면 하이라이트가 국가색을 덮었다
+  // (uk-con-2019는 단독 렌더에서도 중심 채도 0.01로 무채색이 됐다).
+  // 알베도가 이기도록 더 매트하게 낮췄다. 입체감은 유지된다.
+  roughness: 0.62,
+  metalness: 0.06,
   hoverScale: 1.35,
   selectScale: 1.55,
+  // 상시 정당명 컬링용 근사 크기 (실측하면 프레임마다 레이아웃이 강제된다)
+  nameCharWidth: 7.2,
+  nameBoxH: 13,
+  nameOffsetX: 10,
+  nameOffsetY: 4,
 };
 
 // estimated: true인 좌표의 시각 구분 — CLAUDE.md 절대규칙 5.
@@ -107,6 +115,8 @@ export const ESTIMATED = {
 export const DROPLINE = {
   color: 0x7d8798,
   opacity: 0.5,
+  // 규범 구간 색을 실을 때는 좀 더 진하게 — 얇은 선이라 옅으면 색이 안 읽힌다
+  bandOpacity: 0.8,
   // 점에서 큐브 바닥면(경제 × 규범 평면)까지 문화축 방향으로 내린다.
   // 명세는 "X-Z 평면"이라 쓰지만 문자 그대로 문화=5 중앙면에 두면 점의 절반이
   // 위로, 절반이 아래로 뻗어 깊이 단서가 되지 못한다. 바닥면도 X-Z에 평행하며
@@ -158,7 +168,43 @@ export const TICK = {
   color: 0x8b95a6,
 };
 
-// 국가 구분 = 점마다 붙는 2글자 코드 텍스트.
+// 국가 = 점 채움색 (2026-07-30 편집국 지시).
+//
+// 색 채널을 규범 구간에서 국가로 넘기되, 절대규칙 6("규범 구간은 색 + 도형을 함께
+// 쓴다")을 깨지 않도록 규범의 색을 다른 요소로 옮겼다:
+//   - 3D: 드롭라인 색 = 규범 구간 (원래 회색 고정이라 비어 있던 채널)
+//   - 2D: 점 윤곽선 색 = 규범 구간 (점선 패턴은 추정치가 계속 씀 — 서로 독립)
+// 규범은 Z위치 + 도형 + 색을 여전히 모두 갖는다.
+//
+// 색상은 40도 간격으로 균등 배치해 서로 구분되게 했고, 축 색(경제 #2a78d6 hue 212,
+// 사회문화 #1baf7a hue 162, 규범 #eb6834 hue 17)과의 충돌은 프레임버퍼 픽셀
+// 검사로 검증한다 — 과거 다원주의 #2a78d6이 경제축과 충돌한 사고가 있었다.
+// 축은 얇은 라인이고 점은 조명 받는 입체라 재질로도 갈린다.
+export const COUNTRY_COLORS = {
+  // 처음 #ff6b6b였으나 반다원주의 구간색 #d03b3b와 ΔE 17로 가장 붙어 있었다.
+  // 한국 점이 "빨강 = 반다원주의" 신호처럼 읽힐 수 있어 명도를 올려 띄웠다.
+  KR: '#ff9b9b',
+  HU: '#ffa94d',
+  PL: '#d8e04a',
+  IT: '#5fd97a',
+  ES: '#3fd9c0',
+  US: '#4db8ff',
+  FR: '#7d8bff',
+  GB: '#c77dff',
+  DE: '#ff70c8',
+};
+const FALLBACK_COUNTRY_COLOR = '#9aa4b3';
+
+export function countryColor(code) {
+  return COUNTRY_COLORS[code] ?? FALLBACK_COUNTRY_COLOR;
+}
+export function countryColorHex(code) {
+  return parseInt(countryColor(code).slice(1), 16);
+}
+
+// 국가 구분 보조 = 점마다 붙는 2글자 코드 텍스트.
+// 색이 주 채널이 된 뒤에도 남겨 둔다 — 색만으로 범주를 구분하지 말라는
+// CLAUDE.md 금지 조항 때문이다. 색맹 독자와 인쇄 흑백 출력이 이 텍스트에 의존한다.
 //
 // 왜 색이 아닌 텍스트인가: 채움색·도형은 규범 구간이, 윤곽 점선은 추정치가 이미 쓴다.
 // 남은 채널은 윤곽 선 색과 텍스트인데, 팔레트에 구간 3색 + 축 3색이 잡혀 있어
@@ -217,6 +263,8 @@ export const VIEW2D = {
   hoverRadius: 9,
   selectRadius: 11,
   strokeWidth: 1.4,
+  // 규범 구간 색을 실은 윤곽선. 색을 읽어야 하므로 조금 두껍게.
+  bandStrokeWidth: 2.2,
   estimatedDash: [3, 2],
   labelColor: '#e0e6ef',
   labelFont: '600 11px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif',
@@ -312,8 +360,15 @@ export const UI = {
   showTicks: '축 눈금 숫자 표시',
   showTicksNote: '기본은 숨김이다. PNG 내보내기에는 척도 판독을 위해 항상 포함된다.',
   showCountry: '국가 코드 표시',
-  showCountryNote: '점마다 국가 코드를 붙인다. 국가별 묶음 영역은 쓰지 않는다 — 각국이 좌우 스펙트럼을 다 채워 영역이 서로 겹친다(36쌍 중 21쌍).',
+  showCountryNote: '색만으로 구분하지 않기 위한 보조 표기다. 색맹 독자와 흑백 인쇄가 이 코드에 의존한다.',
   pngCountryKey: '국가',
+
+  showPartyNames: '정당명 표시',
+  showPartyNamesNote: '3D에서는 겹치는 이름을 자동으로 생략한다. 회전하면 생략되는 정당이 바뀐다 — 정확한 확인은 점을 클릭할 것.',
+  partyNamesHidden: (n) => (n ? `겹쳐서 생략된 이름 ${n}개` : '전부 표시됨'),
+
+  countryLegendTitle: '국가',
+  countryLegendNote: '색은 국가만 뜻한다. 규범 구간은 도형과 윤곽·드롭라인 색이 나타낸다.',
   view2dLabels: '전체 라벨 표시',
   view2dLabelsNote: '인쇄용이므로 2D에서는 기본으로 켠다. 겹치는 라벨은 자동으로 생략된다.',
   exportPng: 'PNG 내보내기',

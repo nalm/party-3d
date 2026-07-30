@@ -62,7 +62,10 @@ export function createScene(viewEl, labelEl) {
   const key = new THREE.DirectionalLight(0xffffff, 1.5);
   key.position.set(1, 1.4, 1).multiplyScalar(SPACE.half * 3);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x93b4ff, 0.55);
+  // 보조광은 중립 백색이어야 한다. 원래 파랑 틴트(0x93b4ff)였으나 점 채움색이
+  // 국가를 나타내게 된 뒤로는 틴트가 국가색을 왜곡했다 — 영국 보라(#c77dff)가
+  // 보조광에 물들어 213°(보조광 색상)로 측정됐다. 조명이 데이터를 바꿔선 안 된다.
+  const fill = new THREE.DirectionalLight(0xffffff, 0.5);
   fill.position.set(-1, -0.6, -0.8).multiplyScalar(SPACE.half * 3);
   scene.add(fill);
 

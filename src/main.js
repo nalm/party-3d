@@ -1,4 +1,4 @@
-import { UI, NORMS_BANDS, CAMERA, COUNTRY_TAG } from './config.js';
+import { UI, NORMS_BANDS, CAMERA, COUNTRY_TAG, countryColor, labelOf } from './config.js';
 import { createScene } from './scene.js';
 import { buildSpace } from './axes.js';
 import { loadParties } from './data.js';
@@ -29,7 +29,35 @@ function fillChrome() {
   set('#estimated-caption', UI.estimatedLegend);
   set('#grid-caption', UI.gridCaption);
   set('#independence-caption', UI.axisIndependenceNote);
+  set('#country-legend h2', UI.countryLegendTitle);
+  set('#country-legend-note', UI.countryLegendNote);
   renderBandLegend();
+}
+
+// 데이터에 실제로 존재하는 국가만 범례에 넣는다
+function renderCountryLegend(parties) {
+  const host = document.querySelector('#country-rows');
+  if (!host) return;
+  host.textContent = '';
+
+  for (const code of [...new Set(parties.map((p) => p.country))].sort()) {
+    const row = document.createElement('div');
+    row.className = 'country-row';
+
+    const dot = document.createElement('span');
+    dot.className = 'country-dot';
+    dot.style.background = countryColor(code);
+    row.appendChild(dot);
+
+    row.appendChild(Object.assign(document.createElement('span'), {
+      textContent: labelOf('country', code),
+    }));
+    row.appendChild(Object.assign(document.createElement('span'), {
+      className: 'country-code',
+      textContent: code,
+    }));
+    host.appendChild(row);
+  }
 }
 
 // 절단점이 바뀌면 범례의 구간 범위도 따라가야 한다.
@@ -47,9 +75,10 @@ function renderBandLegend() {
     const row = document.createElement('div');
     row.className = 'band-row';
 
+    // 견본은 윤곽선 색으로 그린다 (CSS가 currentColor를 쓴다) — 채움색은 국가 몫이다
     const swatch = document.createElement('span');
     swatch.className = `band-swatch ${m.shape}`;
-    swatch.style.background = m.color;
+    swatch.style.color = m.color;
     row.appendChild(swatch);
 
     const text = document.createElement('span');
@@ -61,8 +90,9 @@ function renderBandLegend() {
 
 function main() {
   fillChrome();
-  // 국가 코드는 기본 켬 — CSS 게이트의 초기 상태를 토글 기본값과 맞춘다
+  // CSS 게이트의 초기 상태를 토글 기본값과 맞춘다 (둘 다 기본 켬)
   document.body.classList.toggle('show-country', COUNTRY_TAG.defaultVisible);
+  document.body.classList.add('show-names');
 
   const ctx = createScene(document.querySelector('#view'), document.querySelector('#labels'));
   const { scene, camera, renderer, flyTo, start, tick } = ctx;
@@ -71,6 +101,7 @@ function main() {
 
   const { parties } = loadParties();
   const points = buildPoints(scene, parties);
+  renderCountryLegend(parties);
   console.info(`[렌더] 점 ${points.items.length}개`);
 
   const traj = buildTrajectories(scene, parties, points.items);
@@ -217,6 +248,12 @@ function main() {
       view2d.setShowCountry(on);
       draw2D();
     },
+    onNames: (on) => {
+      document.body.classList.toggle('show-names', on);
+      points.setShowNames(on);
+      view2d.setShowLabels(on);
+      draw2D();
+    },
     onExport: () => {
       const canvas = downloadPNG({ items: points.items, trajectories: traj.trajectories });
       console.info(`[내보내기] PNG ${canvas.width}×${canvas.height}`);
@@ -232,6 +269,20 @@ function main() {
       document.body.classList.toggle(cls);
     });
   }
+
+  // 상시 정당명 겹침 컬링은 카메라가 움직일 때마다 다시 해야 한다.
+  // viewUI가 만들어진 뒤에 등록한다 — 콜백이 viewUI를 참조하기 때문.
+  const viewEl = document.querySelector('#view');
+  let lastCulled = -1;
+  ctx.onFrame((cam) => {
+    points.cullPartyNames(cam, viewEl.clientWidth, viewEl.clientHeight);
+    // 값이 바뀔 때만 DOM을 건드린다 — 매 프레임 텍스트를 쓰면 낭비다
+    const n = points.culledNames();
+    if (n !== lastCulled) {
+      lastCulled = n;
+      viewUI.setCulledCount(n);
+    }
+  });
 
   applyFilters();
 

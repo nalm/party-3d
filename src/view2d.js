@@ -1,4 +1,4 @@
-import { AXES, NORMS_BANDS, VIEW2D, UI, COUNTRY_TAG, bandOf } from './config.js';
+import { AXES, NORMS_BANDS, VIEW2D, UI, COUNTRY_TAG, bandOf, countryColor } from './config.js';
 
 // 2D 대체 뷰. X-Y 산점도 + 규범을 색·도형으로 이중 인코딩 — 명세 13.2절.
 // Canvas 2D를 쓰는 이유: PNG 내보내기가 목적이고, 인쇄 배율로 다시 그리기가 쉽다.
@@ -197,17 +197,28 @@ export function createView2D(canvas, { items, trajectories }) {
       ctx.save();
       ctx.globalAlpha = item.matched ? 1 : VIEW2D.dimAlpha;
 
+      // 채움색 = 국가
       drawShape(ctx, meta.shape, x, y, r);
-      ctx.fillStyle = meta.color;
+      ctx.fillStyle = countryColor(rec.country);
       ctx.fill();
 
-      // 추정치는 점선 윤곽으로 구분한다 — CLAUDE.md 절대규칙 5
+      // 윤곽선 색 = 규범 구간, 점선 = 추정치 (두 속성은 서로 독립)
+      // — CLAUDE.md 절대규칙 5·6
       const estimated = rec.econ.estimated || rec.cultural.estimated || rec.norms.estimated;
-      ctx.lineWidth = VIEW2D.strokeWidth;
-      ctx.strokeStyle = rec.id === selectedId ? '#ffffff' : 'rgba(255,255,255,.65)';
+      ctx.lineWidth = rec.id === selectedId ? VIEW2D.strokeWidth + 1.4 : VIEW2D.bandStrokeWidth;
+      ctx.strokeStyle = meta.color;
       if (estimated) ctx.setLineDash(VIEW2D.estimatedDash);
       drawShape(ctx, meta.shape, x, y, r);
       ctx.stroke();
+
+      // 선택된 점은 흰 테두리를 한 겹 더 둘러 눈에 띄게 한다
+      if (rec.id === selectedId) {
+        ctx.setLineDash([]);
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = '#ffffff';
+        drawShape(ctx, meta.shape, x, y, r + 3);
+        ctx.stroke();
+      }
       ctx.restore();
     }
   }

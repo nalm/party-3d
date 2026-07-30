@@ -1,4 +1,4 @@
-import { VIEW2D, NORMS_BANDS, UI, labelOf } from './config.js';
+import { VIEW2D, NORMS_BANDS, UI, labelOf, countryColor } from './config.js';
 import { createView2D } from './view2d.js';
 import { shortSourceList } from './panel-source.js';
 
@@ -62,21 +62,16 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
   // 정하기 전에 재야 한다.
   const capFont = '10.5px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';
   ctx.font = capFont;
-  // 국가 코드 해독 키 — 이미지는 단독 유통되므로 코드만 있으면 읽을 수 없다
-  const countryKey = [...new Set(items.map((i) => i.rec.country))]
-    .sort()
-    .map((c) => `${c} ${labelOf('country', c)}`)
-    .join(' · ');
-
+  // 국가는 색 견본 줄로 따로 그린다(아래) — 여기서는 텍스트 캡션만 접는다
   const capLines = [
-    `${UI.pngCountryKey}: ${countryKey}`,
     `${UI.pngSourcePrefix}: ${shortSourceList(items.map((i) => i.rec))}`,
     UI.pngScaleNote,
     UI.pngCutNote(lo, hi),
     UI.pngGenerated(dateText),
   ].flatMap((t) => wrapText(ctx, t, W - PAD * 2));
 
-  const captionH = 18 + 20 + capLines.length * CAP_LINE_H + 10;
+  // 규범 범례 18 + 국가 색 견본 17 + 캡션 첫 줄까지 18 + 줄 수 + 하단 여백
+  const captionH = 18 + 17 + 18 + capLines.length * CAP_LINE_H + 10;
   const H = WARN_H + TITLE_H + CHART_H + captionH;
 
   out.width = Math.round(W * S);
@@ -117,15 +112,13 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
   let x = PAD;
   ctx.font = '11.5px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';
   const ranges = { pluralist: [0, lo], borderline: [lo, hi], anti_pluralist: [hi, 1] };
+  // 규범 구간 견본은 윤곽선 색 + 도형. 채움색은 국가를 뜻하므로 채우지 않는다.
   for (const key of NORMS_BANDS.order) {
     const m = NORMS_BANDS.meta[key];
     const [a, b] = ranges[key];
-    drawLegendShape(ctx, m.shape, x + 6, y, 6);
-    ctx.fillStyle = m.color;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,.6)';
-    ctx.lineWidth = 1;
-    drawLegendShape(ctx, m.shape, x + 6, y, 6);
+    ctx.strokeStyle = m.color;
+    ctx.lineWidth = 2;
+    drawLegendShape(ctx, m.shape, x + 6, y, 5.5);
     ctx.stroke();
 
     const text = `${m.label} ${a.toFixed(2)}–${b.toFixed(2)}`;
@@ -135,12 +128,27 @@ export function renderExportCanvas({ items, trajectories, dateText }) {
     x += 17 + ctx.measureText(text).width + 20;
   }
   ctx.fillStyle = '#9aa4b3';
-  ctx.fillText('점선 윤곽 = 추정치', x, y);
+  ctx.fillText('윤곽선 색·도형 = 규범 구간 · 점선 = 추정치 · 채움색 = 국가', x, y);
+
+  // 국가 색 견본 줄 — 코드만으로는 어느 색이 어느 나라인지 알 수 없다
+  y += 17;
+  x = PAD;
+  ctx.font = '10.5px "Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';
+  for (const code of [...new Set(items.map((i) => i.rec.country))].sort()) {
+    ctx.beginPath();
+    ctx.arc(x + 4, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = countryColor(code);
+    ctx.fill();
+    const t = `${code} ${labelOf('country', code)}`;
+    ctx.fillStyle = '#9aa4b3';
+    ctx.fillText(t, x + 12, y);
+    x += 12 + ctx.measureText(t).width + 14;
+  }
 
   // 출처·척도·절단점·생성일 — 위에서 이미 접어 둔 줄을 그린다
   ctx.font = capFont;
   ctx.fillStyle = '#9aa4b3';
-  y += 20;
+  y += 18;
   for (const line of capLines) {
     ctx.fillText(line, PAD, y);
     y += CAP_LINE_H;

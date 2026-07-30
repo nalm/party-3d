@@ -3,6 +3,8 @@ import { createScene } from './scene.js';
 import { buildSpace } from './axes.js';
 import { loadParties } from './data.js';
 import { buildPoints } from './points.js';
+import { createPanel } from './panel.js';
+import { createPicker } from './pick.js';
 
 // 한국어 UI 문자열은 전부 config.js에서 가져온다 — CLAUDE.md「코드 컨벤션」.
 function fillChrome() {
@@ -70,11 +72,25 @@ function main() {
   const points = buildPoints(scene, parties);
   console.info(`[렌더] 점 ${points.items.length}개`);
 
+  const panel = createPanel(document.querySelector('#panel'), {
+    onClose: () => picker.clearSelection(),
+  });
+
+  const picker = createPicker({
+    camera,
+    domElement: renderer.domElement,
+    items: points.items,
+    onSelect: (rec) => panel.show(rec),
+    onDeselect: () => panel.clear(),
+  });
+
   // 개발·검증용 핸들. 탭이 백그라운드면 requestAnimationFrame이 멈춰 화면이
   // 갱신되지 않으므로 drawOnce로 한 프레임을 강제할 수 있게 해 둔다.
   window.__party3d = {
     ...ctx,
     points,
+    panel,
+    picker,
     renderBandLegend,
     drawOnce() {
       renderer.render(scene, camera);

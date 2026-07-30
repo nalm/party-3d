@@ -64,7 +64,9 @@ export const NORMS_BANDS = {
   cut: [0.3, 0.5],
   order: ['pluralist', 'borderline', 'anti_pluralist'],
   meta: {
-    pluralist: { label: '다원주의', color: '#2a78d6', colorHex: 0x2a78d6, shape: 'sphere', shapeLabel: '구' },
+    // 원래 #2a78d6이었으나 경제축 색과 같은 값이라 축 라인과 점이 구분되지 않았다.
+    // 픽셀 검사에서도 둘이 분리되지 않아 더 밝은 파랑으로 옮겼다 (2026-07-30).
+    pluralist: { label: '다원주의', color: '#4a9eff', colorHex: 0x4a9eff, shape: 'sphere', shapeLabel: '구' },
     borderline: { label: '경계', color: '#eda100', colorHex: 0xeda100, shape: 'octahedron', shapeLabel: '8면체' },
     anti_pluralist: { label: '반다원주의', color: '#d03b3b', colorHex: 0xd03b3b, shape: 'tetrahedron', shapeLabel: '4면체' },
   },
@@ -117,20 +119,34 @@ export const GRID = {
 export const CAMERA = {
   fov: 45,
   near: 0.1,
-  far: 500,
-  initial: [22, 16, 26],
+  far: 2000,
+
+  // 절대 위치가 아니라 방향이다. 거리는 종횡비에서 계산한다 — 아래 fitMargin 참조.
+  // fov는 수직 기준이므로 창이 좁으면 수평으로 잘린다. 거리를 고정하면
+  // 세로로 긴 창에서 큐브가 화면 밖으로 나간다.
+  // 기본값이 [22,16,26]이었으나 그 방향에서 es-vox-2019가 it-fdi-2019를 거의 완전히
+  // 가렸다. FdI는 "이념축 극단 ≠ 규범축 극단"을 보여주는 검증 사례라 가려지면 안 된다.
+  // 20개 점의 최소 화면 간격을 재서 0.0104 → 0.0266으로 개선되는 방향으로 옮겼다.
+  initialDir: [26, 16, 22],
+
+  // 큐브 외접구를 화면에 담을 때 남길 여백. 축 양극 라벨이 큐브 밖으로
+  // 1.5 world unit 나가므로 그만큼을 포함한다.
+  fitMargin: 1.18,
+
   presets: {
-    econ_cultural: { label: '경제 × 문화 정면', pos: [0, 0, 38], up: [0, 1, 0] },
-    norms: { label: '규범 정면', pos: [38, 0, 0], up: [0, 1, 0] },
-    iso: { label: '등축', pos: [22, 16, 26], up: [0, 1, 0] },
+    econ_cultural: { label: '경제 × 문화 정면', dir: [0, 0, 1] },
+    norms: { label: '규범 정면', dir: [1, 0, 0] },
+    iso: { label: '등축', dir: [26, 16, 22] },
   },
   tweenMs: 900,
 };
 
 export const CONTROLS = {
   damping: 0.08,
-  minDistance: 12,
-  maxDistance: 90,
+  // 최소 거리는 큐브 안으로 파고들지 않을 정도. 최대 거리는 프레이밍 거리에서
+  // 파생시키므로(종횡비 의존) 상수로 두지 않는다.
+  minDistance: 10,
+  maxDistanceFactor: 2.2,
 };
 
 export const TICK = {
@@ -159,4 +175,83 @@ export const UI = {
 
   loadError: 'parties.json을 읽지 못했다.',
   validationPrefix: '[검증]',
+
+  // 상세 패널
+  panelEmpty: '점을 클릭하면 상세와 출처가 표시된다.',
+  panelHint: '빈 곳을 클릭하면 선택이 해제된다.',
+  panelClose: '닫기',
+  secAxes: '세 축',
+  secSub: '사회·문화 하위 지표',
+  secTags: '태그',
+  secOrg: '조직 형태',
+  secSource: '출처',
+  lblScale: '척도',
+  lblVariable: '변수',
+  lblEdition: '판',
+  lblYear: '연도',
+  lblDataset: '데이터셋',
+  lblCoverage: '범위',
+  lblCitation: '인용',
+  lblCaveat: '캐비엇',
+  lblWeights: '가중치',
+  lblBand: '구간',
+  lblEstimated: '추정치',
+  lblMeasured: '실측',
+  lblNote: '주',
+  lblWeightedSum: '가중합',
+  lblPopulism: '포퓰리즘 수사',
+  lblForeign: '대외·주권',
+  lblFamily: '정당 가족',
+  lblAffiliation: '국제 소속',
+  lblInstitutionalization: '제도화',
+  lblPersonalization: '개인화',
+  lblOrgType: '유형',
+
+  srcUnresolved: '출처 메타를 찾지 못했다',
+  bandMismatch: '저장된 구간과 현재 절단점 기준 구간이 다르다',
+  orgLayerNote: '조직 형태는 축이 아니라 유형이다. 위치로 읽지 말 것 — 명세 6절.',
+  populismLayerNote: '포퓰리즘은 규범축과 별개다. 수사가 있다는 사실이 규범 훼손을 함의하지 않는다 — 명세 7.1절.',
 };
+
+// 범주형 필드의 한국어 표시. 코드에 하드코딩 금지.
+export const LABELS = {
+  country: {
+    DE: '독일', FR: '프랑스', GB: '영국', IT: '이탈리아',
+    ES: '스페인', HU: '헝가리', PL: '폴란드', KR: '한국',
+  },
+  family: {
+    christian_democracy: '기독교민주주의',
+    social_democracy: '사회민주주의',
+    green: '녹색',
+    radical_left: '급진좌파',
+    radical_right: '급진우파',
+    liberal: '자유주의',
+    conservative: '보수주의',
+  },
+  populism_tag: { right: '우파 포퓰리즘', left: '좌파 포퓰리즘', none: '해당 없음' },
+  foreign_tag: {
+    pro_eu: '친EU',
+    eurosceptic: '반EU',
+    soft_eurosceptic: '연성 반EU',
+    alliance_first: '한미일 동맹 우선',
+    strategic_autonomy: '전략적 자율성',
+  },
+  level: { high: '높음', mid: '중간', low: '낮음' },
+  org_type: {
+    mass_program: '대중·프로그램 정당',
+    cartel_dominant: '카르텔·지배 정당',
+    movement: '운동 정당',
+    personalist: '인물 정당',
+  },
+  sub: {
+    north_korea_security: '대북 · 안보',
+    gender_minority: '젠더 · 소수자',
+    tradition_religion: '전통가치 · 종교',
+  },
+};
+
+// 사전에 없는 값은 원문을 그대로 노출한다. 조용히 빈칸으로 만들면 데이터 누락이 숨는다.
+export function labelOf(dict, key) {
+  if (key === null || key === undefined) return '—';
+  return LABELS[dict]?.[key] ?? String(key);
+}

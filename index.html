@@ -83,12 +83,89 @@
       .band-swatch.tetrahedron { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
       .legend-note { margin: 7px 0 0; font-size: 11px; color: var(--dim); }
 
+      /* 범례(좌)와 패널(우) 사이에 둔다 */
       #captions {
-        position: fixed; bottom: 14px; right: 14px; z-index: 20;
-        max-width: 330px; text-align: right;
-        font-size: 11px; color: var(--dim);
+        position: fixed; bottom: 14px; left: 326px; right: 366px; z-index: 20;
+        text-align: center; font-size: 11px; color: var(--dim);
       }
       #captions p { margin: 0 0 5px; }
+
+      /* ── 호버·선택 라벨 ── */
+      .point-label {
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        padding: 1px 6px;
+        border-radius: 3px;
+        background: rgba(10, 13, 18, 0.82);
+        border: 1px solid var(--border);
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+      }
+      .point-label.selected {
+        border-color: #fff;
+        background: rgba(255, 255, 255, 0.94);
+        color: #10141a;
+        text-shadow: none;
+      }
+
+      /* ── 상세 패널 ── */
+      #panel {
+        position: fixed; top: 46px; right: 0; bottom: 0; width: 352px; z-index: 25;
+        background: var(--panel);
+        border-left: 1px solid var(--border);
+        backdrop-filter: blur(8px);
+        overflow-y: auto;
+        padding: 14px 16px 28px;
+      }
+      #panel.open { box-shadow: -12px 0 32px rgba(0, 0, 0, 0.4); }
+      .panel-empty { margin: 4px 0; font-size: 12px; color: var(--dim); }
+
+      .panel-close {
+        float: right; margin: -4px -4px 0 0;
+        background: none; border: none; color: var(--dim);
+        font-size: 21px; line-height: 1; cursor: pointer; padding: 2px 6px;
+      }
+      .panel-close:hover { color: var(--fg); }
+
+      .panel-head h2 { margin: 0; font-size: 18px; letter-spacing: -0.02em; }
+      .name-local { margin: 1px 0 0; font-size: 12px; color: var(--dim); }
+      .meta-line { margin: 3px 0 0; font-size: 11px; color: var(--dim); }
+
+      #panel section { margin-top: 16px; }
+      #panel h3 {
+        margin: 0 0 7px; font-size: 11px; font-weight: 700;
+        color: var(--dim); letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--border); padding-bottom: 4px;
+      }
+
+      .kv { display: grid; grid-template-columns: 74px 1fr; gap: 8px; margin: 3px 0; font-size: 11.5px; }
+      .kv-k { color: var(--dim); }
+      .kv-v { color: var(--fg); word-break: break-word; }
+      .kv.warn .kv-v { color: #ffb0a0; }
+      .kv.note .kv-v { color: #cfd6e0; font-style: italic; }
+
+      .axis-item {
+        border-left: 3px solid var(--border);
+        padding: 6px 0 8px 9px;
+        margin-bottom: 11px;
+      }
+      .axis-head { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; margin-bottom: 5px; }
+      .axis-name { font-size: 12px; font-weight: 700; }
+      .axis-val { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .axis-scale { font-size: 10.5px; color: var(--dim); }
+
+      .badge { font-size: 9.5px; padding: 1px 5px; border-radius: 2px; font-weight: 700; }
+      .badge-est { background: rgba(237, 161, 0, 0.2); color: #f0bc4a; border: 1px dashed #a87d16; }
+      .badge-meas { background: rgba(27, 175, 122, 0.18); color: #4ed4a2; border: 1px solid #1baf7a; }
+
+      .src-box {
+        margin-top: 6px; padding: 7px 8px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border); border-radius: 4px;
+      }
+      .src-box .kv { grid-template-columns: 60px 1fr; font-size: 11px; margin: 2px 0; }
+
+      .layer-note { margin: 7px 0 0; font-size: 10.5px; color: #8c96a5; line-height: 1.45; }
     </style>
   </head>
   <body>
@@ -113,6 +190,8 @@
       <p id="grid-caption"></p>
       <p id="independence-caption"></p>
     </div>
+
+    <aside id="panel"></aside>
 
     <script type="module" src="/src/main.js"></script>
   </body>

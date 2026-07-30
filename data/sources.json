@@ -1,0 +1,131 @@
+{
+  "_meta": {
+    "version": "0.1",
+    "generated": "2026-07-30",
+    "purpose": "parties.json의 src 필드가 가리키는 데이터셋 메타. 상세 패널이 '데이터셋 · 판 · 변수명 · 연도 · 척도 범위'를 모두 표시해야 하므로(명세 13.4절) 한 줄 설명만으로는 부족하다.",
+    "src_format": "parties.json의 src는 '<데이터셋키>.<변수명>' 형식이다. 괄호 안 부가 설명이 뒤에 붙을 수 있다. 예: 'CHES2019.lrecon', 'OhmyNews.estimate-2026-07 (명세 4.3절)'"
+  },
+
+  "datasets": {
+    "CHES2019": {
+      "kind": "expert_survey",
+      "name_ko": "채플힐 전문가 서베이",
+      "name_full": "Chapel Hill Expert Survey trend file, 1999–2019",
+      "edition": "트렌드 파일 · 2019 웨이브",
+      "org": "노스캐롤라이나대 채플힐 (UNC)",
+      "citation": "Jolly, S. et al. (2022). \"Chapel Hill Expert Survey trend file, 1999–2019.\" Electoral Studies.",
+      "coverage": "EU 28개국+, 268개 정당, 1,196 정당-연도",
+      "url": "https://www.chesdata.eu/",
+      "caveat": "전문가 코딩이다. 지표 변동이 실제 행태 변화인지 코더 인식의 변화인지 완전히 분리하기 어렵다 — 명세 11절 1항.",
+      "variables": {
+        "lrecon": { "name_ko": "경제 좌우", "scale": [0, 10], "note": "0 = 재분배·국가개입(좌), 10 = 시장·민영화(우)" },
+        "galtan": { "name_ko": "GAL–TAN", "scale": [0, 10], "note": "0 = GAL(녹색·대안·자유), 10 = TAN(전통·권위·국가)" }
+      }
+    },
+
+    "CHES2010": {
+      "kind": "expert_survey",
+      "name_ko": "채플힐 전문가 서베이",
+      "name_full": "Chapel Hill Expert Survey trend file, 1999–2019",
+      "edition": "트렌드 파일 · 2010 웨이브",
+      "org": "노스캐롤라이나대 채플힐 (UNC)",
+      "citation": "Jolly, S. et al. (2022). \"Chapel Hill Expert Survey trend file, 1999–2019.\" Electoral Studies.",
+      "coverage": "EU 28개국+, 268개 정당, 1,196 정당-연도",
+      "url": "https://www.chesdata.eu/",
+      "caveat": "궤적 비교용 과거 웨이브다. 웨이브 간 문항·코더 구성이 완전히 동일하지 않다.",
+      "variables": {
+        "lrecon": { "name_ko": "경제 좌우", "scale": [0, 10], "note": "0 = 재분배·국가개입(좌), 10 = 시장·민영화(우)" },
+        "galtan": { "name_ko": "GAL–TAN", "scale": [0, 10], "note": "0 = GAL(녹색·대안·자유), 10 = TAN(전통·권위·국가)" }
+      }
+    },
+
+    "VParty2019": {
+      "kind": "expert_survey",
+      "name_ko": "V-Party (V-Dem)",
+      "name_full": "V-Party Dataset V1 (Varieties of Party Identity and Organization)",
+      "edition": "v1 · 2019 관측",
+      "org": "예테보리대 V-Dem 연구소",
+      "citation": "Lührmann, A. et al. (2020). V-Party Dataset V1; V-Dem Briefing Paper #9. 인용값은 Medzihorsky, J. & Lindberg, S. (2023). \"Walking the Talk.\" Party Politics. DOI 10.1177/13540688231153092.",
+      "coverage": "169개국 1,955개 정당, 1970–2019",
+      "url": "https://www.v-dem.net/data/v-party-dataset/",
+      "caveat": "선거 단위 관측이라 CHES 웨이브 연도와 정확히 일치하지 않는다. 병합 키 설계가 미확정이다 — parties.json _meta.open_issues.",
+      "variables": {
+        "v2xpa_antiplural": { "name_ko": "반다원주의 지수", "scale": [0, 1], "note": "0 = 다원주의(제도 수용), 1 = 반다원주의(규범 파괴). X·Y와 척도가 다르므로 정규화 금지" },
+        "v2xpa_popul": { "name_ko": "포퓰리즘 지수", "scale": [0, 1], "note": "반다원주의와 별개 축이다. 합치면 Medzihorsky & Lindberg의 발견이 무효화된다 — 명세 7.1절" },
+        "v2pariglef": { "name_ko": "경제 좌우", "scale": [0, 1], "note": "CHES lrecon의 대체 지표" }
+      }
+    },
+
+    "VParty2010": {
+      "kind": "expert_survey",
+      "name_ko": "V-Party (V-Dem)",
+      "name_full": "V-Party Dataset V1 (Varieties of Party Identity and Organization)",
+      "edition": "v1 · 2010 관측",
+      "org": "예테보리대 V-Dem 연구소",
+      "citation": "Lührmann, A. et al. (2020). V-Party Dataset V1.",
+      "coverage": "169개국 1,955개 정당, 1970–2019",
+      "url": "https://www.v-dem.net/data/v-party-dataset/",
+      "caveat": "선거 단위 관측이라 CHES 2010 웨이브와 연도가 어긋날 수 있다. 궤적 비교 시 주의.",
+      "variables": {
+        "v2xpa_antiplural": { "name_ko": "반다원주의 지수", "scale": [0, 1], "note": "0 = 다원주의, 1 = 반다원주의" }
+      }
+    },
+
+    "GPS2019": {
+      "kind": "expert_survey",
+      "name_ko": "글로벌 정당 서베이",
+      "name_full": "Global Party Survey 2019",
+      "edition": "2019 단일 스냅숏",
+      "org": "Pippa Norris (Harvard)",
+      "citation": "Norris, P. (2020). \"Measuring Populism Worldwide.\" Party Politics 26(6). Harvard Dataverse DOI 10.7910/DVN/WMGTNS",
+      "coverage": "163개국 1,043개 정당, 전문가 1,861명",
+      "url": "https://doi.org/10.7910/DVN/WMGTNS",
+      "caveat": "단일 연도 스냅숏이라 궤적을 그릴 수 없다. 한국은 전신 정당(새누리당 등)만 코딩된 경우가 있어 확인 필요.",
+      "variables": {
+        "V8": { "name_ko": "포퓰리즘 수사", "scale": [0, 10], "note": "정당 가족이 아니라 수사 스타일로 측정" }
+      }
+    },
+
+    "LZ4": {
+      "kind": "qualitative_coding",
+      "name_ko": "Levitsky & Ziblatt 4지표 정성 코딩",
+      "name_full": "권위주의 행태 4대 리트머스 테스트",
+      "edition": "코딩 루브릭 5절 (docs/coding-rubric.md)",
+      "org": "자체 코딩",
+      "citation": "Levitsky, S. & Ziblatt, D. (2018). How Democracies Die. Juan Linz(1978)를 발전시킨 것.",
+      "coverage": "V-Party 값이 없는 정당에 적용",
+      "url": null,
+      "caveat": "판정은 공개 발언·표결 기록·강령에서 인용 가능한 증거로만 한다. 인상 평가 금지 — 명세 5.3절. 증거 로그 형식은 루브릭 8절.",
+      "variables": {
+        "Z-1": { "name_ko": "민주적 게임 규칙 거부", "scale": [0, 1], "note": "선거 결과 수용 여부, 헌정 절차 우회 시도" },
+        "Z-2": { "name_ko": "정치 경쟁자의 정당성 부정", "scale": [0, 1], "note": "상대를 반국가세력·범죄자·외국 앞잡이로 규정" },
+        "Z-3": { "name_ko": "폭력 용인·조장", "scale": [0, 1], "note": "정치 폭력에 대한 대응, 지지자 폭력의 옹호" },
+        "Z-4": { "name_ko": "상대의 시민적 자유 축소 의향", "scale": [0, 1], "note": "언론·사법 독립 침해 발언 및 시도" }
+      }
+    },
+
+    "OhmyNews": {
+      "kind": "self_estimate",
+      "name_ko": "오마이뉴스 자체 추정",
+      "name_full": "공표된 데이터셋이 아님 — 내부 추정값",
+      "edition": "2026-07 시드",
+      "org": "오마이뉴스 편집국",
+      "citation": null,
+      "coverage": "한국 정당 (CHES·V-Party 미포함 국가)",
+      "url": null,
+      "caveat": "⚠ 강령·표결 코딩이나 전문가 서베이를 거치지 않았다. 증거 로그가 없으며 인용 가능한 출처가 아니다. 명세 2절 B안에 해당한다.",
+      "variables": {
+        "estimate-2026-07": {
+          "name_ko": "참조 위치 보간 추정",
+          "scale": [0, 10],
+          "note": "명세 3.4절(경제) · 4.3절(사회·문화) 참조 위치 사이 보간. 사회·문화는 하위 3지표의 균등 가중합이라 계산값이지만, 하위 지표 자체가 추정치다."
+        },
+        "provisional-2026-07": {
+          "name_ko": "규범축 잠정 판정",
+          "scale": [0, 1],
+          "note": "⚠ 코딩 루브릭 Z-1~Z-4 판정을 아직 거치지 않았다. 증거 로그(루브릭 8절)가 없다. 루브릭 5.3절(개인 행위의 정당 귀속)을 다르게 적용하면 값이 크게 달라진다."
+        }
+      }
+    }
+  }
+}

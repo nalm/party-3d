@@ -9,9 +9,16 @@ export function createScene(viewEl, labelEl) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(SPACE.bgColor);
 
+  // 창 전체가 아니라 뷰 컨테이너 크기를 쓴다. 사이드바·패널이 창을 잠식하므로
+  // window.innerWidth로 재면 큐브 중심이 화면 중앙에서 어긋난다.
+  const size = () => ({
+    w: viewEl.clientWidth || 1,
+    h: viewEl.clientHeight || 1,
+  });
+
   const camera = new THREE.PerspectiveCamera(
     CAMERA.fov,
-    window.innerWidth / window.innerHeight,
+    size().w / size().h,
     CAMERA.near,
     CAMERA.far,
   );
@@ -36,11 +43,11 @@ export function createScene(viewEl, labelEl) {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(size().w, size().h);
   viewEl.appendChild(renderer.domElement);
 
   const labelRenderer = new CSS2DRenderer({ element: labelEl });
-  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.setSize(size().w, size().h);
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -60,8 +67,7 @@ export function createScene(viewEl, labelEl) {
   scene.add(fill);
 
   function resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const { w, h } = size();
     const prevFit = fitDistance();
 
     camera.aspect = w / h;
@@ -79,21 +85,68 @@ export function createScene(viewEl, labelEl) {
     }
     controls.maxDistance = nextFit * CONTROLS.maxDistanceFactor;
   }
-  window.addEventListener('resize', resize);
+
+  // 창 리사이즈뿐 아니라 사이드바 스크롤바 출현 등으로 컨테이너만 바뀌는 경우도
+  // 잡아야 하므로 ResizeObserver로 컨테이너를 직접 관찰한다.
+  new ResizeObserver(resize).observe(viewEl);
 
   const frameHooks = [];
   function onFrame(fn) {
     frameHooks.push(fn);
   }
 
-  function start() {
-    renderer.setAnimationLoop(() => {
-      controls.update();
-      for (const fn of frameHooks) fn(camera);
-      renderer.render(scene, camera);
-      labelRenderer.render(scene, camera);
-    });
+  // ── 프리셋 전환 트윈 ──
+  // 방향은 구면에서 보간하고 거리는 따로 섞는다. 위치를 직선 보간하면 카메라가
+  // 원점 쪽으로 파고들며 화면이 뒤집힌다.
+  let tween = null;
+
+  function flyTo(dir, ms = CAMERA.tweenMs) {
+    const from = camera.position.clone().sub(controls.target);
+    const to = new THREE.Vector3(...dir).normalize().multiplyScalar(fitDistance());
+    tween = {
+      fromDir: from.clone().normalize(),
+      toDir: to.clone().normalize(),
+      fromLen: from.length(),
+      toLen: to.length(),
+      t0: performance.now(),
+      ms,
+    };
   }
 
-  return { scene, camera, renderer, labelRenderer, controls, onFrame, start, frame, fitDistance, resize };
+  function stepTween() {
+    if (!tween) return;
+    const k = Math.min(1, (performance.now() - tween.t0) / tween.ms);
+    const e = k < 0.5 ? 2 * k * k : 1 - 2 * (1 - k) * (1 - k); // easeInOutQuad
+
+    const qFull = new THREE.Quaternion().setFromUnitVectors(tween.fromDir, tween.toDir);
+    const qPart = new THREE.Quaternion().slerpQuaternions(new THREE.Quaternion(), qFull, e);
+    const dir = tween.fromDir.clone().applyQuaternion(qPart);
+    const len = THREE.MathUtils.lerp(tween.fromLen, tween.toLen, e);
+
+    camera.position.copy(controls.target).addScaledVector(dir, len);
+    if (k >= 1) tween = null;
+  }
+
+  // 사용자가 직접 돌리기 시작하면 트윈을 포기한다. 안 그러면 조작과 싸운다.
+  controls.addEventListener('start', () => {
+    tween = null;
+  });
+
+  function tick() {
+    stepTween();
+    controls.update();
+    for (const fn of frameHooks) fn(camera);
+    renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
+  }
+
+  function start() {
+    renderer.setAnimationLoop(tick);
+  }
+
+  return {
+    scene, camera, renderer, labelRenderer, controls,
+    onFrame, start, tick, frame, flyTo, fitDistance, resize,
+    isTweening: () => tween !== null,
+  };
 }

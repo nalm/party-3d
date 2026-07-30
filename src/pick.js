@@ -89,8 +89,14 @@ export function createPicker({ camera, domElement, items, onSelect, onDeselect }
     ndc.x = ((clientX - r.left) / r.width) * 2 - 1;
     ndc.y = -((clientY - r.top) / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
+    // Raycaster는 mesh.visible을 보지 않는다. 필터에 걸러진 점이 잡히지 않도록
+    // matched를 직접 확인해야 한다.
     const hits = raycaster.intersectObjects(meshes, false);
-    return hits.length ? byMesh.get(hits[0].object) : null;
+    for (const hit of hits) {
+      const item = byMesh.get(hit.object);
+      if (item?.matched) return item;
+    }
+    return null;
   }
 
   domElement.addEventListener('pointermove', (e) => {
@@ -122,5 +128,10 @@ export function createPicker({ camera, domElement, items, onSelect, onDeselect }
     getSelected: () => selected?.rec ?? null,
     // 절단점이 바뀌면 선택 강조 색도 따라가야 한다
     refreshAll: () => items.forEach(refresh),
+    // 필터 적용 후 호출. 걸러진 점이 선택·호버 상태로 남아 있으면 해제한다.
+    syncFilter() {
+      if (hovered && !hovered.matched) setHovered(null);
+      if (selected && !selected.matched) setSelected(null);
+    },
   };
 }

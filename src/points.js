@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NORMS_BANDS, POINT, ESTIMATED, DROPLINE, bandOf } from './config.js';
+import { NORMS_BANDS, POINT, ESTIMATED, DROPLINE, FILTER, bandOf } from './config.js';
 import { positionOf, FLOOR_Y } from './axes.js';
 
 // 정당 점 · 드롭라인 · 규범 구간 인코딩.
@@ -95,7 +95,11 @@ export function buildPoints(scene, parties) {
     const dropline = buildDropLine(pos);
     group.add(dropline);
 
-    items.push({ rec, mesh, shell, dropline, band });
+    items.push({
+      rec, mesh, shell, dropline, band,
+      baseOpacity: estimated ? ESTIMATED.opacity : 1,
+      matched: true,
+    });
   }
 
   scene.add(group);
@@ -113,5 +117,27 @@ export function buildPoints(scene, parties) {
     }
   }
 
-  return { group, items, applyBands };
+  // 필터 적용. hide=false면 걸러진 점을 흐리게 남긴다 (config.FILTER 주석 참조).
+  // 드롭라인과 추정치 케이지는 어느 모드에서든 매칭된 점만 유지한다.
+  function applyFilter(matchFn, hide) {
+    let shown = 0;
+    for (const item of items) {
+      const on = !!matchFn(item.rec);
+      item.matched = on;
+      if (on) shown++;
+
+      const mat = item.mesh.material;
+      item.mesh.visible = hide ? on : true;
+      mat.opacity = on ? item.baseOpacity : FILTER.dimOpacity;
+      mat.transparent = mat.opacity < 1;
+      // 반투명 점이 서로를 가리며 정렬 artifact를 만드는 것을 줄인다
+      mat.depthWrite = on;
+
+      item.dropline.visible = on;
+      if (item.shell) item.shell.visible = on;
+    }
+    return shown;
+  }
+
+  return { group, items, applyBands, applyFilter };
 }

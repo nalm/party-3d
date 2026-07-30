@@ -154,6 +154,15 @@ export const TICK = {
   color: 0x8b95a6,
 };
 
+// 필터에 걸러진 점의 처리.
+// 기본을 '숨기기'가 아니라 '흐리게'로 둔 이유: 이 앱의 목적은 비교다. 걸러진 점을
+// 완전히 없애면 남은 점이 전체 분포에서 어디쯤인지 알 수 없다. 다만 드롭라인과
+// 라벨은 걷어낸다 — 20개가 다 남으면 어지러워 판독이 안 된다.
+export const FILTER = {
+  dimOpacity: 0.11,
+  defaultHide: false,
+};
+
 // 한국어 UI 문자열. 코드에 하드코딩 금지.
 export const UI = {
   title: '정당 3축 탐색기',
@@ -206,6 +215,28 @@ export const UI = {
   lblInstitutionalization: '제도화',
   lblPersonalization: '개인화',
   lblOrgType: '유형',
+
+  // 필터 · 시점 · 절단점 조작부
+  secFilter: '필터',
+  filterCountry: '국가',
+  filterFamily: '정당 가족',
+  filterYear: '연도',
+  filterAll: '전체',
+  filterNone: '해제',
+  filterHideLabel: '걸러진 점 숨기기',
+  filterHideHint: '기본은 흐리게다. 걸러진 점을 남겨 두면 남은 점이 전체 분포에서 어디쯤인지 읽을 수 있다.',
+  filterCount: (shown, total) => `${shown} / ${total} 표시`,
+
+  secCamera: '시점',
+  cameraNote: '"경제 × 문화 정면"이 2D 산점도와 같은 구도다. 규범축이 화면 깊이 방향으로 눕는다.',
+
+  secCut: '규범 구간 절단점',
+  cutLower: '다원주의 ↔ 경계',
+  cutUpper: '경계 ↔ 반다원주의',
+  cutProposalNote: '절단점 0.30 / 0.50은 명세 5.5절의 제안값이며 문헌 근거가 없다. 값을 바꾸면 점의 색과 도형이 즉시 바뀐다.',
+  cutExample: '스페인 복스(0.55)와 이탈리아의 형제들(0.45)은 규범축 차이가 0.10뿐인데 절단점 0.50을 사이에 두고 구간이 갈린다. 슬라이더를 조금만 움직이면 두 정당이 같은 구간으로 합쳐진다.',
+
+  reset: '초기화',
 
   srcUnresolved: '출처 메타를 찾지 못했다',
   bandMismatch: '저장된 구간과 현재 절단점 기준 구간이 다르다',

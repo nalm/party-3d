@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1250" viewBox="0 0 1600 1250">
+<rect width="1600" height="1250" fill="#f7f6f3"/>
+<text x="80.0" y="76.0" font-family="Noto Sans CJK KR" font-size="44" font-weight="700" fill="#1a1a19" text-anchor="start">정당 분류 3축 프레임워크</text>
+<text x="80.0" y="116.0" font-family="Noto Sans CJK KR" font-size="20" font-weight="400" fill="#52514e" text-anchor="start">경제 &#215; 사회 · 문화 &#215; 민주주의 규범 — 서로 직교하는 3개 축</text>
+<line x1="800.0" y1="300.0" x2="1146.4" y2="500.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="800.0" y1="300.0" x2="453.6" y2="500.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="742.3" y1="333.3" x2="1088.7" y2="533.3" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="857.7" y1="333.3" x2="511.3" y2="533.3" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="684.5" y1="366.7" x2="1030.9" y2="566.7" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="915.5" y1="366.7" x2="569.1" y2="566.7" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="626.8" y1="400.0" x2="973.2" y2="600.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="973.2" y1="400.0" x2="626.8" y2="600.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="569.1" y1="433.3" x2="915.5" y2="633.3" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="1030.9" y1="433.3" x2="684.5" y2="633.3" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="511.3" y1="466.7" x2="857.7" y2="666.7" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="1088.7" y1="466.7" x2="742.3" y2="666.7" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="453.6" y1="500.0" x2="800.0" y2="700.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="1146.4" y1="500.0" x2="800.0" y2="700.0" stroke="#e7e6e0" stroke-width="1"/>
+<line x1="1025.2" y1="370.0" x2="574.8" y2="630.0" stroke="#eb6834" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="945.1" y1="408.1" x2="952.1" y2="420.3" stroke="#eb6834" stroke-width="2.5" opacity="0.55"/>
+<line x1="870.8" y1="451.0" x2="877.8" y2="463.2" stroke="#eb6834" stroke-width="2.5" opacity="0.55"/>
+<line x1="722.2" y1="536.8" x2="729.2" y2="549.0" stroke="#eb6834" stroke-width="2.5" opacity="0.55"/>
+<line x1="647.9" y1="579.7" x2="654.9" y2="591.9" stroke="#eb6834" stroke-width="2.5" opacity="0.55"/>
+<polygon points="574.8,630.0 591.9,607.5 602.9,626.5" fill="#eb6834"/>
+<polygon points="1025.2,370.0 1008.1,392.5 997.1,373.5" fill="#eb6834"/>
+<line x1="574.8" y1="370.0" x2="1025.2" y2="630.0" stroke="#2a78d6" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="647.9" y1="420.3" x2="654.9" y2="408.1" stroke="#2a78d6" stroke-width="2.5" opacity="0.55"/>
+<line x1="722.2" y1="463.2" x2="729.2" y2="451.0" stroke="#2a78d6" stroke-width="2.5" opacity="0.55"/>
+<line x1="870.8" y1="549.0" x2="877.8" y2="536.8" stroke="#2a78d6" stroke-width="2.5" opacity="0.55"/>
+<line x1="945.1" y1="591.9" x2="952.1" y2="579.7" stroke="#2a78d6" stroke-width="2.5" opacity="0.55"/>
+<polygon points="1025.2,630.0 997.1,626.5 1008.1,607.5" fill="#2a78d6"/>
+<polygon points="574.8,370.0 602.9,373.5 591.9,392.5" fill="#2a78d6"/>
+<line x1="800.0" y1="760.0" x2="800.0" y2="240.0" stroke="#1baf7a" stroke-width="4.5" stroke-linecap="round"/>
+<line x1="807.0" y1="671.6" x2="793.0" y2="671.6" stroke="#1baf7a" stroke-width="2.5" opacity="0.55"/>
+<line x1="807.0" y1="585.8" x2="793.0" y2="585.8" stroke="#1baf7a" stroke-width="2.5" opacity="0.55"/>
+<line x1="807.0" y1="414.2" x2="793.0" y2="414.2" stroke="#1baf7a" stroke-width="2.5" opacity="0.55"/>
+<line x1="807.0" y1="328.4" x2="793.0" y2="328.4" stroke="#1baf7a" stroke-width="2.5" opacity="0.55"/>
+<polygon points="800.0,240.0 811.0,266.0 789.0,266.0" fill="#1baf7a"/>
+<polygon points="800.0,760.0 789.0,734.0 811.0,734.0" fill="#1baf7a"/>
+<circle cx="800.0" cy="500.0" r="7" fill="#1a1a19"/>
+<text x="800.0" y="196.0" font-family="Noto Sans CJK KR" font-size="26" font-weight="700" fill="#1baf7a" text-anchor="middle">사회 · 문화</text>
+<text x="800.0" y="222.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="middle">TAN — 권위 · 전통</text>
+<text x="800.0" y="797.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="middle">GAL — 자유 · 개방</text>
+<text x="1045.0" y="648.0" font-family="Noto Sans CJK KR" font-size="26" font-weight="700" fill="#2a78d6" text-anchor="start">경제</text>
+<text x="1045.0" y="676.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="start">시장 · 민영화</text>
+<text x="555.0" y="360.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="end">재분배 · 국가 개입</text>
+<text x="555.0" y="650.0" font-family="Noto Sans CJK KR" font-size="26" font-weight="700" fill="#eb6834" text-anchor="end">민주주의 규범</text>
+<text x="555.0" y="678.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="end">반다원주의 — 규범 파괴</text>
+<text x="555.0" y="706.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#d03b3b" text-anchor="end">임계선 — 넘으면 체제 성격이 바뀐다</text>
+<text x="1045.0" y="360.0" font-family="Noto Sans CJK KR" font-size="18" font-weight="500" fill="#1a1a19" text-anchor="start">다원주의 — 제도 수용</text>
+<text x="80.0" y="208.0" font-family="Noto Sans CJK KR" font-size="17" font-weight="500" fill="#1a1a19" text-anchor="start">세 축은 서로 독립이다.</text>
+<text x="80.0" y="234.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="400" fill="#52514e" text-anchor="start">한 축의 위치가 다른 축을</text>
+<text x="80.0" y="258.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="400" fill="#52514e" text-anchor="start">결정하지 않는다.</text>
+<text x="80.0" y="300.0" font-family="Noto Sans CJK KR" font-size="14" font-weight="400" fill="#898781" text-anchor="start">격자는 깊이 참조용이며</text>
+<text x="80.0" y="322.0" font-family="Noto Sans CJK KR" font-size="14" font-weight="400" fill="#898781" text-anchor="start">아무 의미도 없다.</text>
+<rect x="80" y="910" width="710" height="250" rx="14" fill="#ffffff" stroke="#e1e0d9" stroke-width="1"/>
+<rect x="110" y="936" width="110" height="28" rx="7" fill="#52514e"/>
+<text x="165.0" y="956.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="500" fill="#ffffff" text-anchor="middle">레이어 1</text>
+<text x="234.0" y="958.0" font-family="Noto Sans CJK KR" font-size="24" font-weight="700" fill="#1a1a19" text-anchor="start">조직 형태</text>
+<text x="110.0" y="992.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#52514e" text-anchor="start">축이 아니라 유형 — 제도화 &#215; 개인화 2&#215;2</text>
+<text x="275.0" y="1012.0" font-family="Noto Sans CJK KR" font-size="13" font-weight="400" fill="#898781" text-anchor="middle">개인화 낮음</text>
+<text x="485.0" y="1012.0" font-family="Noto Sans CJK KR" font-size="13" font-weight="400" fill="#898781" text-anchor="middle">개인화 높음</text>
+<text x="162.0" y="1053.0" font-family="Noto Sans CJK KR" font-size="13" font-weight="400" fill="#898781" text-anchor="end">제도화 높음</text>
+<text x="162.0" y="1113.0" font-family="Noto Sans CJK KR" font-size="13" font-weight="400" fill="#898781" text-anchor="end">제도화 낮음</text>
+<rect x="170" y="1018" width="210" height="60" rx="8" fill="#E1F5EE"/>
+<text x="275.0" y="1055.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#0F6E56" text-anchor="middle">대중 · 프로그램 정당</text>
+<rect x="380" y="1018" width="210" height="60" rx="8" fill="#FAEEDA"/>
+<text x="485.0" y="1055.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#854F0B" text-anchor="middle">카르텔 · 지배 정당</text>
+<rect x="170" y="1078" width="210" height="60" rx="8" fill="#F1EFE8"/>
+<text x="275.0" y="1115.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#444441" text-anchor="middle">운동 정당</text>
+<rect x="380" y="1078" width="210" height="60" rx="8" fill="#EEEDFE"/>
+<text x="485.0" y="1115.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#3C3489" text-anchor="middle">인물 정당</text>
+<rect x="810" y="910" width="710" height="250" rx="14" fill="#ffffff" stroke="#e1e0d9" stroke-width="1"/>
+<rect x="840" y="936" width="110" height="28" rx="7" fill="#52514e"/>
+<text x="895.0" y="956.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="500" fill="#ffffff" text-anchor="middle">레이어 2</text>
+<text x="964.0" y="958.0" font-family="Noto Sans CJK KR" font-size="24" font-weight="700" fill="#1a1a19" text-anchor="start">포퓰리즘 태그</text>
+<text x="840.0" y="992.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#52514e" text-anchor="start">축에서 분리 — 수사 스타일로 별도 병기</text>
+<rect x="840" y="1018" width="200" height="44" rx="22" fill="#FAECE7"/>
+<text x="940.0" y="1046.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#993C1D" text-anchor="middle">우파 포퓰리즘</text>
+<rect x="1060" y="1018" width="200" height="44" rx="22" fill="#E6F1FB"/>
+<text x="1160.0" y="1046.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#185FA5" text-anchor="middle">좌파 포퓰리즘</text>
+<rect x="1280" y="1018" width="200" height="44" rx="22" fill="#F1EFE8"/>
+<text x="1380.0" y="1046.0" font-family="Noto Sans CJK KR" font-size="16" font-weight="500" fill="#444441" text-anchor="middle">해당 없음</text>
+<text x="840.0" y="1102.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#52514e" text-anchor="start">Medzihorsky &#38; Lindberg(2023): 민주주의 훼손을 예측하는 것은</text>
+<text x="840.0" y="1128.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#52514e" text-anchor="start">포퓰리즘이 아니라 반다원주의 &#8594; 같은 축에 두면 오분류</text>
+<text x="80.0" y="1212.0" font-family="Noto Sans CJK KR" font-size="15" font-weight="400" fill="#898781" text-anchor="start">&#8251; 개념 설명용 3차원 도해. 정당별 좌표를 찍을 때는 2차원 산점도에 Z축을 색으로 인코딩할 것 — 3D는 깊이 판독이 되지 않는다.</text>
+</svg>

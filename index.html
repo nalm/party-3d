@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 전 좌표가 추정치인 동안 검색 색인을 막는다 — CLAUDE.md「공개 조건」 3항 -->
+    <meta name="robots" content="noindex" />
+    <title>정당 3축 탐색기</title>
+    <style>
+      :root {
+        --bg: #0e1116;
+        --fg: #e6eaf0;
+        --dim: #9aa4b3;
+        --panel: rgba(20, 25, 33, 0.88);
+        --border: #2b3340;
+        --warn-bg: rgba(160, 42, 42, 0.92);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      #view { position: fixed; inset: 0; }
+      #view canvas { display: block; }
+
+      /* CSS2DRenderer 오버레이. 라벨 자체는 클릭 대상이 아니므로 이벤트를 통과시킨다. */
+      #labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+
+      .axis-pole {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 1);
+      }
+      .axis-tick {
+        font-size: 10px;
+        color: var(--dim);
+        white-space: nowrap;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.95);
+      }
+
+      #banner {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 30;
+        background: var(--warn-bg);
+        color: #fff;
+        padding: 8px 14px;
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      }
+      #banner strong { font-size: 13px; white-space: nowrap; }
+      #banner span { font-size: 12px; color: rgba(255, 255, 255, 0.92); }
+
+      #titlebar {
+        position: fixed; top: 46px; left: 14px; z-index: 20;
+      }
+      #titlebar h1 { margin: 0; font-size: 17px; letter-spacing: -0.02em; }
+      #titlebar p { margin: 2px 0 0; font-size: 12px; color: var(--dim); }
+
+      #legend {
+        position: fixed; bottom: 14px; left: 14px; z-index: 20;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 12px;
+        max-width: 300px;
+        backdrop-filter: blur(6px);
+      }
+      #legend h2 { margin: 0 0 7px; font-size: 12px; color: var(--dim); font-weight: 600; }
+      .band-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-size: 12px; }
+      .band-swatch { width: 13px; height: 13px; flex: 0 0 auto; }
+      .band-swatch.sphere { border-radius: 50%; }
+      .band-swatch.octahedron { transform: rotate(45deg); }
+      .band-swatch.tetrahedron { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+      .legend-note { margin: 7px 0 0; font-size: 11px; color: var(--dim); }
+
+      #captions {
+        position: fixed; bottom: 14px; right: 14px; z-index: 20;
+        max-width: 330px; text-align: right;
+        font-size: 11px; color: var(--dim);
+      }
+      #captions p { margin: 0 0 5px; }
+    </style>
+  </head>
+  <body>
+    <div id="banner"><strong></strong><span></span></div>
+
+    <div id="titlebar">
+      <h1></h1>
+      <p></p>
+    </div>
+
+    <div id="view"></div>
+    <div id="labels"></div>
+
+    <div id="legend">
+      <h2></h2>
+      <div id="band-rows"></div>
+      <p class="legend-note" id="band-cut-caption"></p>
+      <p class="legend-note" id="estimated-caption"></p>
+    </div>
+
+    <div id="captions">
+      <p id="grid-caption"></p>
+      <p id="independence-caption"></p>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

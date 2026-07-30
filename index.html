@@ -144,6 +144,28 @@
         border-color: #fff; background: rgba(255,255,255,.94);
         color: #10141a; text-shadow: none;
       }
+      /* 궤적 양 끝점 라벨. 호버·선택 라벨은 점 위쪽이라 이쪽은 아래쪽에 붙는다. */
+      .traj-label {
+        font-size: 10.5px; font-weight: 600; white-space: nowrap; color: #cdd5e0;
+        padding: 0 4px; border-radius: 2px; background: rgba(10,13,18,.7);
+        text-shadow: 0 0 4px rgba(0,0,0,.95);
+      }
+
+      /* ── 궤적 변화량 ── */
+      .delta-item { border-left: 3px solid var(--border); padding: 5px 0 6px 9px; margin-bottom: 8px; }
+      .delta-head { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+      .delta-name { font-size: 11.5px; font-weight: 700; }
+      .delta-move { font-size: 11.5px; color: var(--dim); font-variant-numeric: tabular-nums; }
+      .delta-amount {
+        font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; color: #ffd479;
+      }
+      .delta-amount.delta-flat { color: var(--dim); font-weight: 400; font-size: 13px; }
+      .delta-tag {
+        font-size: 9.5px; padding: 1px 5px; border-radius: 2px; font-weight: 700;
+        background: rgba(255,255,255,.07); color: var(--dim);
+      }
+      .delta-ratio { margin: 2px 0 0; font-size: 10.5px; color: #8c96a5; }
+      .delta-segs { margin-top: 4px; }
 
       /* ── 상세 패널 ── */
       #panel {

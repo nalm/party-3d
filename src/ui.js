@@ -1,4 +1,4 @@
-import { UI, CAMERA, NORMS_BANDS } from './config.js';
+import { UI, CAMERA, NORMS_BANDS, TRAJECTORY } from './config.js';
 
 // 카메라 프리셋 · 규범 구간 절단점 슬라이더 · 리셋.
 // 절단점은 명세의 제안값일 뿐이므로 UI에서 조절 가능해야 한다 — CLAUDE.md「구간 절단점은 하드코딩 금지」.
@@ -12,9 +12,10 @@ function el(tag, cls, text) {
   return n;
 }
 
-export function createControlsUI(host, { flyTo, onCutChange, onReset }) {
+export function createControlsUI(host, { flyTo, onCutChange, onReset, trajectory, onTrajFilter }) {
   const sliders = {};
   const readouts = {};
+  const trajInputs = {};
 
   function cameraSection() {
     const sec = el('section', 'ctl-sec');
@@ -83,6 +84,42 @@ export function createControlsUI(host, { flyTo, onCutChange, onReset }) {
     return sec;
   }
 
+  function checkbox(labelText, checked, onToggle) {
+    const lab = el('label', 'chk');
+    const input = el('input');
+    input.type = 'checkbox';
+    input.checked = checked;
+    input.addEventListener('change', () => onToggle(input.checked));
+    lab.append(input, el('span', null, labelText));
+    return { lab, input };
+  }
+
+  function trajectorySection() {
+    const sec = el('section', 'ctl-sec');
+    sec.append(el('h2', null, UI.secTrajectory));
+
+    const show = checkbox(UI.trajShow, trajectory.isVisible(), (on) => {
+      trajectory.setVisible(on);
+      // 궤적을 끄면 "궤적만 보기"도 의미가 없으므로 함께 해제한다
+      if (!on && trajInputs.only.checked) {
+        trajInputs.only.checked = false;
+        onTrajFilter?.(false);
+      }
+      trajInputs.only.disabled = !on;
+    });
+    trajInputs.show = show.input;
+    sec.append(show.lab);
+
+    const only = checkbox(UI.trajOnly, false, (on) => onTrajFilter?.(on));
+    only.input.disabled = !trajectory.isVisible();
+    trajInputs.only = only.input;
+    sec.append(only.lab);
+
+    sec.append(el('p', 'filter-count', UI.trajCount(trajectory.count)));
+    sec.append(el('p', 'hint', UI.trajNote));
+    return sec;
+  }
+
   function resetSection() {
     const sec = el('section', 'ctl-sec');
     const b = el('button', 'reset-btn', UI.reset);
@@ -91,8 +128,15 @@ export function createControlsUI(host, { flyTo, onCutChange, onReset }) {
     return sec;
   }
 
-  host.append(cameraSection(), cutSection(), resetSection());
+  host.append(cameraSection(), trajectorySection(), cutSection(), resetSection());
 
-  // 리셋 시 슬라이더 표시를 되돌리기 위해 노출한다
-  return { syncReadouts };
+  // 리셋 시 슬라이더·체크박스 표시를 되돌리기 위해 노출한다
+  return {
+    syncReadouts,
+    resetTrajectory() {
+      trajInputs.show.checked = TRAJECTORY.defaultVisible;
+      trajInputs.only.checked = false;
+      trajInputs.only.disabled = !TRAJECTORY.defaultVisible;
+    },
+  };
 }

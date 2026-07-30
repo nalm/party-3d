@@ -7,6 +7,7 @@ import { createPanel } from './panel.js';
 import { createPicker } from './pick.js';
 import { createFilters } from './filters.js';
 import { createControlsUI } from './ui.js';
+import { buildTrajectories } from './trajectory.js';
 
 // 한국어 UI 문자열은 전부 config.js에서 가져온다 — CLAUDE.md「코드 컨벤션」.
 function fillChrome() {
@@ -65,8 +66,12 @@ function main() {
   const points = buildPoints(scene, parties);
   console.info(`[렌더] 점 ${points.items.length}개`);
 
+  const traj = buildTrajectories(scene, parties, points.items);
+  console.info(`[렌더] 궤적 ${traj.count}개 — ${[...traj.keys].join(', ')}`);
+
   const panel = createPanel(document.querySelector('#panel'), {
     onClose: () => picker.clearSelection(),
+    trajectoryOf: traj.recordsOf,
   });
 
   const picker = createPicker({
@@ -78,10 +83,16 @@ function main() {
   });
 
   // ── 필터 ──
+  // "궤적 있는 정당만"은 국가·가족·연도 필터와 AND로 합친다.
+  let trajOnly = false;
+
   function applyFilters() {
-    const shown = points.applyFilter(filters.matches, filters.isHiding());
+    const match = (rec) =>
+      filters.matches(rec) && (!trajOnly || traj.keys.has(rec.party_key));
+    const shown = points.applyFilter(match, filters.isHiding());
     filters.setCount(shown, points.items.length);
     picker.syncFilter();
+    traj.syncFilter();
   }
 
   const filters = createFilters(document.querySelector('#filters'), parties, {
@@ -91,6 +102,11 @@ function main() {
   // ── 시점 · 절단점 · 리셋 ──
   const controlsUI = createControlsUI(document.querySelector('#controls'), {
     flyTo,
+    trajectory: traj,
+    onTrajFilter: (on) => {
+      trajOnly = on;
+      applyFilters();
+    },
     onCutChange: () => {
       points.applyBands();
       picker.refreshAll();
@@ -106,6 +122,9 @@ function main() {
       points.applyBands();
       renderBandLegend();
       picker.clearSelection();
+      trajOnly = false;
+      traj.setVisible(true);
+      controlsUI.resetTrajectory();
       filters.reset(); // emit → applyFilters
       picker.refreshAll();
       flyTo(CAMERA.presets.iso.dir);
@@ -117,7 +136,7 @@ function main() {
   // 개발·검증용 핸들. 탭이 백그라운드면 requestAnimationFrame이 멈춰 화면이
   // 갱신되지 않으므로 tick으로 한 프레임을 강제할 수 있게 해 둔다.
   window.__party3d = {
-    ...ctx, points, panel, picker, filters, controlsUI,
+    ...ctx, points, panel, picker, filters, controlsUI, traj,
     applyFilters, renderBandLegend,
     drawOnce: tick,
   };

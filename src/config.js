@@ -163,6 +163,22 @@ export const FILTER = {
   defaultHide: false,
 };
 
+// 궤적. 같은 party_key의 연도별 이동을 화살표로 잇는다 — 이 앱의 최대 강점.
+// 색을 중립으로 둔 이유: 구간 색은 점이 이미 담고 있다. 화살표에 다시 색을 실으면
+// 이중 인코딩이 되어 무엇이 범주 정보인지 흐려진다. 방향은 화살촉이 알려 준다.
+export const TRAJECTORY = {
+  color: 0xd8dfe9,
+  opacity: 0.92,
+  shaftRadius: 0.055,
+  headRadius: 0.17,
+  headLength: 0.5,
+  roughness: 0.5,
+  metalness: 0.1,
+  defaultVisible: true,
+  // 화살표를 점 표면에서 시작·종료시켜 점 안에 묻히지 않게 한다
+  endGap: POINT.radius * 1.15,
+};
+
 // 한국어 UI 문자열. 코드에 하드코딩 금지.
 export const UI = {
   title: '정당 3축 탐색기',
@@ -235,6 +251,19 @@ export const UI = {
   cutUpper: '경계 ↔ 반다원주의',
   cutProposalNote: '절단점 0.30 / 0.50은 명세 5.5절의 제안값이며 문헌 근거가 없다. 값을 바꾸면 점의 색과 도형이 즉시 바뀐다.',
   cutExample: '스페인 복스(0.55)와 이탈리아의 형제들(0.45)은 규범축 차이가 0.10뿐인데 절단점 0.50을 사이에 두고 구간이 갈린다. 슬라이더를 조금만 움직이면 두 정당이 같은 구간으로 합쳐진다.',
+
+  secTrajectory: '궤적',
+  trajShow: '궤적 표시',
+  trajOnly: '궤적 있는 정당만',
+  trajNote: '같은 정당의 연도별 이동이다. 화살표는 과거 → 최근 방향이며, 양 끝점은 라벨을 유지한다.',
+  trajCount: (n) => `궤적 ${n}개`,
+
+  secDelta: '궤적 — 축별 변화량',
+  deltaFixed: '거의 고정',
+  deltaBandMove: '구간 이동',
+  deltaOfScale: '척도 대비',
+  deltaScaleCaveat:
+    '척도 대비 비율은 읽기 보조일 뿐이다. 규범축은 0–1 임계선이고 X·Y는 0–10 스펙트럼이라 같은 비율이 같은 의미가 아니다 — 명세 5.2절.',
 
   reset: '초기화',
 
